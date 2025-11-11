@@ -81,7 +81,6 @@ body {
 <div id="createScreen" class="screen active">
   <h2>Wpisz nazwę postaci</h2>
   <input type="text" id="playerName" placeholder="Nazwa">
-  <div id="googleLogin"></div>
   <button class="button" onclick="createPlayer()">Start</button>
 </div>
 
@@ -143,7 +142,6 @@ body {
   <button class="button" onclick="backToLobby()">Powrót</button>
 </div>
 
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 
 let player = {
@@ -162,18 +160,23 @@ const allCards = [
   { name: "Freddy", hp: 30, damage: 6, speed: 1.3, super: null, img: "Freddy.png", rarity: "Basic" },
   { name: "King", hp: 16, damage: 3, speed: 1.7, super: "AOE", img: "King.png", rarity: "Basic" },
   { name: "Luz", hp: 10, damage: 1, speed: 0.5, super: null, img: "Luz.png", rarity: "Basic" },
+  { name: "Pink Sheep", hp: 10, damage: 3, speed: 0.9, super: null, img: "Pink Sheep.png", rarity: "Basic" },
+  { name: "Posuch", hp: 20, damage: 3, speed: 0.95, super: null, img: "Posuch.png", rarity: "Basic" },
   { name: "Skeleton", hp: 20, damage: 5, speed: 1.0, super: null, img: "Skeleton.png", rarity: "Basic" },
   { name: "Snow Golem", hp: 4, damage: 1, speed: 0.7, super: null, img: "Snow Golem.png", rarity: "Basic" },
   { name: "Toy Bonnie", hp: 19, damage: 5, speed: 0.8, super: "AOE", img: "Toy Bonnie.png", rarity: "Basic" },
+  { name: "Vanessa", hp: 10, damage: 2, speed: 0.4, super: null, img: "Vanessa.png", rarity: "Basic" },
   { name: "Zombie", hp: 20, damage: 3, speed: 0.95, super: null, img: "Zombie.png", rarity: "Basic" },
 
   { name: "Albi", hp: 10, damage: 8, speed: 0.3, super: null, img: "Albi.png", rarity: "Rare" },
   { name: "Arctic Fox", hp: 18, damage: 4, speed: 1.0, super: null, img: "Arctic Fox.png", rarity: "Rare" },
   { name: "Baby Zombie", hp: 20, damage: 3, speed: 0.5, super: null, img: "Baby Zombie.png", rarity: "Rare" },
+  { name: "Balloon Boy", hp: 20, damage: 8, speed: 1.65, super: "Splash", img: "Balloon Boy.png", rarity: "Rare" },
   { name: "Bonnie", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Bonnie.png", rarity: "Rare" },
   { name: "Chica", hp: 30, damage: 9, speed: 2.0, super: "Splash", img: "Chica.png", rarity: "Rare" },
   { name: "Helpy", hp: 28, damage: 4, speed: 1.0, super: "AOE", img: "Helpy.png", rarity: "Rare" },
   { name: "Spider Jockey", hp: 36, damage: 9, speed: 1.1, super: null, img: "Spider Jockey.png", rarity: "Rare" },
+  { name: "Tv Man", hp: 20, damage: 5, speed: 0.8, super: "AOE", img: "Tv Man.png", rarity: "Rare" },
   { name: "Vaggie", hp: 22, damage: 8, speed: 1.5, super: null, img: "Vaggie.png", rarity: "Rare" },
 
   { name: "Afton", hp: 20, damage: 9, speed: 0.7, super: null, img: "Afton.png", rarity: "Epic" },
@@ -191,59 +194,20 @@ const allCards = [
   { name: "Anomaly", hp: 50, damage: 2, speed: 0.3, super: "AOE", img: "Anomaly.png", rarity: "Legendary" },
   { name: "Darth Vader", hp: 25, damage: 10, speed: 0.85, super: null, img: "Darth Vader.png", rarity: "Legendary" },
   { name: "Huggy Wuggy", hp: 50, damage: 11, speed: 1.0, super: null, img: "Huggy Wuggy.png", rarity: "Legendary" },
+  { name: "Large Astro TV Man", hp: 32, damage: 8, speed: 0.6, super: "AOE", img: "Tv Man.png", rarity: "Legendary" },
   { name: "Mimicer", hp: 50, damage: 14, speed: 1.0, super: null, img: "Mimicer.png", rarity: "Legendary" },
   { name: "Shadow", hp: 16, damage: 5, speed: 0.2, super: null, img: "Shadow.png", rarity: "Legendary" },
   { name: "Vox", hp: 60, damage: 7, speed: 0.75, super: "AOE", img: "Vox.png", rarity: "Legendary" },
 
   { name: "DJ Vox", hp: 67, damage: 8, speed: 0.6, super: "AOE", img: "DJ Vox.png", rarity: "Mythic" },
+  { name: "R2 D2", hp: 46, damage: 1, speed: 0.15, super: "AOE", img: "R2 D2.png", rarity: "Mythic" },
   { name: "The Man From The Shadow", hp: 40, damage: 20, speed: 1.0, super: null, img: "The Man From The Shadow.png", rarity: "Mythic" },
   { name: "Warden", hp: 50, damage: 18, speed: 1.1, super: "Splash", img: "Warden.png", rarity: "Mythic" },
+  { name: "Zestial", hp: 60, damage: 15, speed: 1.0, super: null, img: "Zestial.png", rarity: "Mythic" },
 
   { name: "H4CK3R", hp: 10, damage: 5, speed: 0.2, super: "AOE", img: "H4CK3R.png", rarity: "Eternal" },
+  { name: "The Deer", hp: 50, damage: 10, speed: 0.6, super: null, img: "The Deer.png", rarity: "Eternal" }
 ];
-
-/* ---------------- GOOGLE LOGIN ---------------- */
-
-function handleGoogleLogin(response) {
-    const data = JSON.parse(atob(response.credential.split('.')[1]));
-
-    const name = data.name || data.email;
-
-    // ustawienie gracza
-    player.name = name;
-    if (player.coins === 0 && player.cards.length === 0) {
-        player.coins = 100; // tylko przy pierwszym logowaniu
-    }
-    saveGame();
-
-    document.getElementById("nameDisplay").textContent = name;
-    document.getElementById("coinsDisplay").textContent = player.coins;
-
-    switchScreen("createScreen", "lobbyScreen");
-
-    console.log("✅ Zalogowano jako:", data);
-}
-
-window.onload = () => {
-    loadGame();
-
-    // ✅ GOOGLE LOGIN INIT
-    google.accounts.id.initialize({
-        client_id: "945725567983-da8jrgno72j119muldshd3kvjc3hklcp.apps.googleusercontent.com",
-        callback: handleGoogleLogin
-    });
-
-    google.accounts.id.renderButton(
-        document.getElementById("googleLogin"),
-        { theme: "outline", size: "large" }
-    );
-
-    // ✅ jeśli gracz ma zapis → idź do lobby
-    const data = localStorage.getItem("save");
-    if (data) {
-        switchScreen("createScreen", "lobbyScreen");
-    }
-};
 
 function saveGame() {
   const saveData = {
