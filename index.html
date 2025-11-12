@@ -912,32 +912,57 @@ async function startBattle() {
   enemyUnits.forEach(u => autoAttack(u, playerUnits));
 }
 
+let defeatedEnemiesThisBattle = 0;
+
 async function autoAttack(unit, enemies) {
   while (battleRunning && unit.card.currentHP > 0 && alive(enemies).length > 0) {
     await new Promise(res => setTimeout(res, unit.card.speed * 1000));
 
     if (!battleRunning || unit.card.currentHP <= 0) break;
 
+    // zapis liczby wrogów przed atakiem
+    const beforeCount = alive(enemies).length;
+
     attack(unit, enemies);
 
-    // ✅ Jeśli drużyna przeciwnika zginęła — koniec
-    if (alive(enemies).length === 0) {
-      battleRunning = false;
+    // policz ilu przeciwników padło po ataku
+    const afterCount = alive(enemies).length;
+    const defeatedNow = beforeCount - afterCount;
+    if (defeatedNow > 0) defeatedEnemiesThisBattle += defeatedNow;
 
-      if (unit.team === "player") {
-        player.coins += 10;
-        document.getElementById("coinsDisplay").textContent = player.coins;
-        updateQuestProgress("winBattle");
-        saveGame();
-      }
+if (alive(enemies).length === 0) {
+  battleRunning = false;
 
-      return;
+  // przyznaj nagrodę tylko jeśli gracz wygrał i ta jednostka jeszcze żyje
+  if (unit.team === "player" && alive(playerUnits).length > 0 && unit.card.currentHP > 0) {
+    let reward = 0;
+    if (defeatedEnemiesThisBattle >= 3) reward = 30;
+    else if (defeatedEnemiesThisBattle === 2) reward = 20;
+    else if (defeatedEnemiesThisBattle === 1) reward = 10;
+
+    if (reward > 0) {
+      player.coins += reward;
+      document.getElementById("coinsDisplay").textContent = player.coins;
+      alert(`💰 Pokonałeś ${defeatedEnemiesThisBattle} przeciwników i zdobyłeś ${reward} Coins!`);
     }
 
-    // ✅ Jeśli wszystkie karty gracza mają 0 HP → przegrana
-    if (checkPlayerDefeat()) return;
+    updateQuestProgress("winBattle");
+    saveGame();
+  }
+
+  defeatedEnemiesThisBattle = 0;
+  return;
+}
+
+
+    // ✅ Jeśli wszystkie karty gracza mają 0 HP → przegrana (bez nagrody)
+    if (checkPlayerDefeat()) {
+      defeatedEnemiesThisBattle = 0;
+      return;
+    }
   }
 }
+
 window.onload = () => {
   loadGame();
 
