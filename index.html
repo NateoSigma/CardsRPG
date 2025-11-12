@@ -204,6 +204,7 @@ const allCards = [
   { name: "Chica", hp: 30, damage: 9, speed: 2.0, super: "Splash", img: "Chica.png", rarity: "Rare" },
   { name: "Helpy", hp: 28, damage: 4, speed: 1.0, super: "AOE", img: "Helpy.png", rarity: "Rare" },
   { name: "Spider Jockey", hp: 36, damage: 9, speed: 1.1, super: null, img: "Spider Jockey.png", rarity: "Rare" },
+  { name: "Spider Man", hp: 10, damage: 8, speed: 0.84, super: null, img: "Spider Man.png", rarity: "Rare" },
   { name: "Tv Man", hp: 20, damage: 5, speed: 0.8, super: "AOE", img: "Tv Man.png", rarity: "Rare" },
   { name: "Vaggie", hp: 22, damage: 8, speed: 1.5, super: null, img: "Vaggie.png", rarity: "Rare" },
 
@@ -212,6 +213,7 @@ const allCards = [
   { name: "Doey", hp: 42, damage: 8, speed: 1.5, super: "Splash", img: "Doey.png", rarity: "Epic" },
   { name: "Enderman", hp: 40, damage: 3, speed: 1.0, super: null, img: "Enderman.png", rarity: "Epic" },
   { name: "Foxy", hp: 30, damage: 7, speed: 0.7, super: null, img: "Foxy.png", rarity: "Epic" },
+  { name: "Han Solo", hp: 20, damage: 8, speed: 0.8, super: null, img: "Han Solo.png", rarity: "Epic" },
   { name: "Hydreigon", hp: 30, damage: 3, speed: 0.8, super: "AOE", img: "Hydreigon.png", rarity: "Epic" },
   { name: "Nightmare Chica", hp: 45, damage: 18, speed: 3.0, super: "Splash", img: "Nightmare Chica.png", rarity: "Epic" },
   { name: "Sonic", hp: 14, damage: 7, speed: 0.3, super: null, img: "Sonic.png", rarity: "Epic" },
@@ -235,11 +237,11 @@ const allCards = [
   { name: "Zestial", hp: 60, damage: 15, speed: 1.0, super: null, img: "Zestial.png", rarity: "Mythic" },
 
   { name: "H4CK3R", hp: 10, damage: 5, speed: 0.2, super: "AOE", img: "H4CK3R.png", rarity: "Eternal" },
+  { name: "Thanos", hp: 46, damage: 13, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Eternal" },
   { name: "The Deer", hp: 50, damage: 10, speed: 0.6, super: null, img: "The Deer.png", rarity: "Eternal" },
 
-  { name: "Spider Man", hp: 10, damage: 8, speed: 0.84, super: null, img: "Spider Man.png", rarity: "Exclusive" },
-  { name: "Thanos", hp: 46, damage: 13, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Exclusive" },
-  { name: "Zombox", hp: 80, damage: 10, speed: 1.0, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
+  { name: "Bekin", hp: 21, damage: 2, speed: 1.2, super: "AOE", img: "Bekin.png", rarity: "Exclusive" },
+  { name: "Zombox", hp: 80, damage: 10, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
 ];
 
 // === 🧪 DOSTĘPNE FUZJE ===
@@ -248,8 +250,14 @@ const fusions = [
     id: 1,
     base1: "Vox",
     base2: "Zombie",
-    result: { name: "Zombox", hp: 80, damage: 10, speed: 1.0, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
-  }
+    result: { name: "Zombox", hp: 80, damage: 10, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
+  },
+  {
+    id: 2,
+    base1: "Bee",
+    base2: "King",
+    result: { name: "Bekin", hp: 21, damage: 2, speed: 1.2, super: "AOE", img: "Bekin.png", rarity: "Exclusive" }
+  },
 ];
 
 function saveGame() {
