@@ -90,6 +90,7 @@ body {
 
   <button class="button" onclick="goInventory()">Ekwipunek</button>
   <button class="button" onclick="enterShop()">Sklep</button>
+  <button class="button" onclick="enterFusion()">⚗️ Fuzje</button>
   <button class="button" onclick="enterQuests()">🟠 Questy</button>
   <button class="button" onclick="enterBattle()">⚔ Pojedynek</button>
   <button class="button" onclick="enterSettings()">⚙ Ustawienia</button>
@@ -103,6 +104,14 @@ body {
   <h3>Twoja drużyna (max 3)</h3>
   <div id="team"></div>
 
+  <button class="button" onclick="backToLobby()">Powrót</button>
+</div>
+
+<!-- ✅ FUZJE -->
+<div id="fusionScreen" class="screen">
+  <h2>⚗️ Fuzje Kart</h2>
+  <p>Połącz odpowiednie postacie, aby stworzyć nowe!</p>
+  <div id="fusionList"></div>
   <button class="button" onclick="backToLobby()">Powrót</button>
 </div>
 
@@ -131,9 +140,20 @@ body {
 
 <!-- ✅ SKLEP -->
 <div id="shopScreen" class="screen">
-  <h2>Sklep</h2>
-  <p>100 Coins → 1 losowa karta</p>
-  <button class="button" onclick="buyPack()">Kup paczkę</button>
+  <h2>🛒 Sklep</h2>
+
+  <div style="margin-bottom:20px;">
+    <p>💼 <b>Zwykła Paczka</b> – 100 Coins</p>
+    <p><small>54% Basic, 26% Rare, 15% Epic, 4% Legendary, 0.9% Mythic, 0.1% Eternal</small></p>
+    <button class="button" onclick="buyPack()">Kup zwykłą paczkę</button>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <p>🌟 <b>Super Pack</b> – 600 Coins</p>
+    <p><small>50% Rare, 30% Epic, 15% Legendary, 4.5% Mythic, 0.5% Eternal</small></p>
+    <button class="button" style="background:#224466;" onclick="buySuperPack()">Kup Super Pack</button>
+  </div>
+
   <button class="button" onclick="backToLobby()">Powrót</button>
 </div>
 
@@ -219,6 +239,17 @@ const allCards = [
 
   { name: "Spider Man", hp: 10, damage: 8, speed: 0.84, super: null, img: "Spider Man.png", rarity: "Exclusive" },
   { name: "Thanos", hp: 46, damage: 13, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Exclusive" },
+  { name: "Zombox", hp: 80, damage: 10, speed: 1.0, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
+];
+
+// === 🧪 DOSTĘPNE FUZJE ===
+const fusions = [
+  {
+    id: 1,
+    base1: "Vox",
+    base2: "Zombie",
+    result: { name: "Zombox", hp: 80, damage: 10, speed: 1.0, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
+  }
 ];
 
 function saveGame() {
@@ -273,6 +304,63 @@ function loadGame() {
   if (document.getElementById("questList")) {
     renderQuests();
   }
+}
+
+function enterFusion() {
+  switchScreen("lobbyScreen", "fusionScreen");
+  renderFusions();
+}
+
+function renderFusions() {
+  const div = document.getElementById("fusionList");
+  div.innerHTML = "";
+
+  fusions.forEach(f => {
+    const have1 = player.cards.some(c => c.name === f.base1 && c.count > 0);
+    const have2 = player.cards.some(c => c.name === f.base2 && c.count > 0);
+
+    const el = document.createElement("div");
+    el.className = "card";
+    el.innerHTML = `
+      <strong>${f.base1} + ${f.base2}</strong><br>
+      = <b style="color:#00ff88;">${f.result.name}</b><br>
+      ${have1 && have2 ? "<button class='button' onclick='doFusion(" + f.id + ")'>Połącz</button>" : "<span style='color:#888;'>Brak wymaganych kart</span>"}
+    `;
+    div.appendChild(el);
+  });
+}
+
+function doFusion(id) {
+  const f = fusions.find(x => x.id === id);
+  if (!f) return;
+
+  const have1 = player.cards.find(c => c.name === f.base1);
+  const have2 = player.cards.find(c => c.name === f.base2);
+
+  if (!have1 || !have2 || have1.count <= 0 || have2.count <= 0) {
+    alert("Nie masz wymaganych kart!");
+    return;
+  }
+
+  // usuń po 1 sztuce każdej z kart
+  have1.count--;
+  have2.count--;
+
+  // dodaj nową kartę
+  let existing = player.cards.find(c => c.name === f.result.name);
+  if (existing) existing.count++;
+  else {
+    player.cards.push({ ...f.result, count: 1 });
+    // jeśli chcesz, możesz też dodać nową kartę do allCards, jeśli chcesz mieć jej pełne dane w grze:
+    if (!allCards.some(c => c.name === f.result.name)) {
+      allCards.push(f.result);
+    }
+  }
+
+  alert(`⚗️ Powstała nowa karta: ${f.result.name}!`);
+  renderInventory();
+  renderFusions();
+  saveGame();
 }
 
 // === 🟠 QUESTY ===
@@ -389,6 +477,15 @@ function getRandomRarity() {
   return "Eternal";                    
 }
 
+function getSuperRarity() {
+  const r = Math.random() * 100;
+  if (r < 50) return "Rare";
+  if (r < 80) return "Epic";
+  if (r < 95) return "Legendary";
+  if (r < 99.5) return "Mythic";
+  return "Eternal";
+}
+
 function startClassicBattle() {
   switchScreen("battleModeScreen", "battleScreen");
   startBattle(); // twoja stara funkcja walki
@@ -470,9 +567,10 @@ function renderInventory() {
   div.innerHTML = "";
 
   player.cards.forEach(card => {
-    // pobierz pełną kartę z allCards
     const base = allCards.find(c => c.name === card.name);
-    if (!base) return; // zabezpieczenie
+    if (!base) return;
+
+    const sellValue = getSellValue(base.rarity);
 
     let el = document.createElement("div");
     el.className = "card";
@@ -486,9 +584,50 @@ function renderInventory() {
       Super: ${base.super || "Brak"}<br>
       Ilość: ${card.count}<br>
       <button class='button' onclick="addToTeam('${base.name}')">Dodaj do drużyny</button>
+      <button class='button' style="background:#552222; border-color:red;" onclick="sellCard('${base.name}')">💰 Sprzedaj (${sellValue}c)</button>
     `;
     div.appendChild(el);
   });
+}
+
+function getSellValue(rarity) {
+  switch (rarity) {
+    case "Basic": return 5;
+    case "Rare": return 12;
+    case "Epic": return 25;
+    case "Legendary": return 40;
+    case "Mythic": return 70;
+    case "Eternal": return 100;
+    case "Exclusive": return 150; // jeśli dodano nową rarowość
+    default: return 0;
+  }
+}
+
+function sellCard(name) {
+  const card = player.cards.find(c => c.name === name);
+  if (!card) return;
+
+  const base = allCards.find(c => c.name === name);
+  const sellValue = getSellValue(base.rarity);
+
+  if (!confirm(`Czy chcesz sprzedać 1x ${name} za ${sellValue} coins?`)) return;
+
+  // usuń 1 sztukę
+  card.count--;
+  if (card.count <= 0) {
+    player.cards = player.cards.filter(c => c.name !== name);
+    // usuń z drużyny jeśli była
+    player.team = player.team.filter(t => t !== name);
+  }
+
+  player.coins += sellValue;
+
+  alert(`💰 Sprzedano ${name} za ${sellValue} coins!`);
+  document.getElementById("coinsDisplay").textContent = player.coins;
+
+  saveGame();
+  renderInventory();
+  renderTeam();
 }
 
 function removeFromTeam(name) {
@@ -551,6 +690,29 @@ function buyPack() {
     getRandomCard();
     updateQuestProgress("buyPack");
     updateQuestProgress("collectCard");
+    saveGame();
+  } else {
+    alert("Masz za mało Coins!");
+  }
+}
+
+function buySuperPack() {
+  if (player.coins >= 600) {
+    player.coins -= 600;
+    document.getElementById("coinsDisplay").textContent = player.coins;
+
+    const rarity = getSuperRarity();
+    const pool = allCards.filter(c => c.rarity === rarity);
+    const card = pool[Math.floor(Math.random() * pool.length)];
+
+    let existing = player.cards.find(c => c.name === card.name);
+    if (existing) existing.count++;
+    else player.cards.push({ ...card, count: 1 });
+
+    alert(`🎁 Otworzyłeś Super Pack!\nWylosowano (${rarity}): ${card.name}`);
+    updateQuestProgress("buyPack");
+    updateQuestProgress("collectCard");
+    renderInventory();
     saveGame();
   } else {
     alert("Masz za mało Coins!");
