@@ -416,7 +416,7 @@ function doFusion(id) {
 
   alert(`⚗️ Powstała nowa karta: ${f.result.name}!`);
 
-  updateQuestProgress(5); 
+  updateQuestProgress("fusion");
   renderInventory();
   renderFusions();
   saveGame();
@@ -523,21 +523,36 @@ function claimQuestReward(id) {
   renderQuests();
 }
 
-// === Aktualizacja postępu questów ===
-function updateQuestProgress(type) {
+function updateQuestProgress(event) {
   quests.forEach(q => {
     if (q.completed) return;
 
-    if (type === "winBattle" && q.title.includes("Wygraj")) {
+    // Wygrane walki
+    if (event === "winBattle" && q.title.includes("Wygraj")) {
       q.progress++;
     }
-    if (type === "buyPack" && q.title.includes("Kup")) {
+
+    // Kupione paczki zwykłe
+    if (event === "buyPack" && q.title.includes("Kup")) {
       q.progress++;
     }
-    if (type === "collectCard" && q.title.includes("Zbierz")) {
+
+    // Otworzenie Super Packa
+    if (event === "openSuperPack" && q.id === 4) {
+      q.progress++;
+    }
+
+    // Fuzja
+    if (event === "fusion" && q.id === 5) {
+      q.progress++;
+    }
+
+    // Zbieranie kart
+    if (event === "collectCard" && q.title.includes("Zbierz")) {
       q.progress = player.cards.length;
     }
   });
+
   saveGame();
 }
 
@@ -792,9 +807,7 @@ function buySuperPack() {
 
     alert(`🎁 Otworzyłeś Super Pack!\nWylosowano (${rarity}): ${card.name}`);
 
-    updateQuestProgress("openSuperPack"); // jeśli używasz nazw
-    // lub:
-    updateQuestProgress(4); // jeśli używasz ID
+    updateQuestProgress("openSuperPack");
 
     updateQuestProgress("collectCard");
 
