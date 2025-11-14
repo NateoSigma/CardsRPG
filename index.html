@@ -397,6 +397,14 @@ const quests = [
     progress: 0,
     reward: { type: "exclusiveCard", card: "Thanos" },
     completed: false
+  },
+  {
+    id: 4,
+    title: "Otwórz Super Packa",
+    goal: 1,
+    progress: 0,
+    reward: { type: "exclusiveCard", card: "Superman" }, // możesz zmienić
+    completed: false
   }
 ];
 
@@ -719,15 +727,20 @@ function buySuperPack() {
     else player.cards.push({ ...card, count: 1 });
 
     alert(`🎁 Otworzyłeś Super Pack!\nWylosowano (${rarity}): ${card.name}`);
-    updateQuestProgress("buyPack");
+
+    updateQuestProgress("openSuperPack"); // jeśli używasz nazw
+    // lub:
+    updateQuestProgress(4); // jeśli używasz ID
+
     updateQuestProgress("collectCard");
+
     renderInventory();
     saveGame();
   } else {
     alert("Masz za mało Coins!");
   }
 }
-
+  
 let battleRunning = false;
 
 function enterBattle() {
