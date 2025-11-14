@@ -567,6 +567,12 @@ function resetGame() {
   // usuń zapis
   localStorage.removeItem("save");
 
+  // 🔄 RESET QUESTÓW
+  quests.forEach(q => {
+    q.progress = 0;
+    q.completed = false;
+  });
+
   // wyczyść obiekt gracza
   player = {
     name: "",
