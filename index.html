@@ -368,6 +368,8 @@ function doFusion(id) {
   }
 
   alert(`⚗️ Powstała nowa karta: ${f.result.name}!`);
+
+  updateQuestProgress(5); 
   renderInventory();
   renderFusions();
   saveGame();
@@ -404,8 +406,16 @@ const quests = [
     title: "Otwórz Super Packa",
     goal: 1,
     progress: 0,
-    reward: { type: "exclusiveCard", card: "Superman" }, // możesz zmienić
+    reward: { type: "exclusiveCard", card: "Superman" },
     completed: false
+  },
+  {
+  id: 5,
+  title: "Wykonaj fuzję",
+  goal: 1,
+  progress: 0,
+  reward: { type: "exclusiveCard", card: "Demogorgon" }, 
+  completed: false
   }
 ];
 
