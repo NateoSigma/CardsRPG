@@ -113,11 +113,6 @@ body {
   <p>Połącz odpowiednie postacie, aby stworzyć nowe!</p>
   <div id="fusionList"></div>
 
-  <button onclick="fuseRarity('Basic')">3 Basic → Rare</button>
-<button onclick="fuseRarity('Rare')">3 Rare → Epic</button>
-<button onclick="fuseRarity('Epic')">3 Epic → Legendary</button>
-<button onclick="fuseRarity('Legendary')">3 Legendary → Mythic</button>
-  
   <button class="button" onclick="backToLobby()">Powrót</button>
 </div>
 
@@ -233,7 +228,6 @@ const allCards = [
   { name: "Hydreigon", hp: 30, damage: 3, speed: 0.8, super: "AOE", img: "Hydreigon.png", rarity: "Epic" },
   { name: "Nightmare Chica", hp: 45, damage: 18, speed: 3.0, super: "Splash", img: "Nightmare Chica.png", rarity: "Epic" },
   { name: "Sonic", hp: 14, damage: 7, speed: 0.3, super: null, img: "Sonic.png", rarity: "Epic" },
-  { name: "Spike", hp: 32, damage: 8, speed: 1.35, super: "Splash", img: "Spike.png", rarity: "Epic" },
   { name: "Superman", hp: 20, damage: 12, speed: 0.91, super: null, img: "Superman.png", rarity: "Epic" },
   { name: "The Knocer", hp: 20, damage: 12, speed: 0.85, super: null, img: "The Knocer.png", rarity: "Epic" },
   { name: "Titan Luz", hp: 20, damage: 8, speed: 0.7, super: null, img: "Titan Luz.png", rarity: "Epic" },
@@ -361,48 +355,6 @@ window.addEventListener("load", () => {
     document.querySelector("#musicControls input").value = savedVolume;
   }
 });
-
-function fuseRarity(rarity) {
-  const next = rarityUpgrade[rarity];
-  if (!next) {
-    alert("To rarity nie może być ulepszone!");
-    return;
-  }
-
-  // znajdź wszystkie karty danego rarity
-  const available = player.cards.filter(c => c.rarity === rarity && c.count >= 3);
-
-  if (available.length === 0) {
-    alert(`Nie masz 3 kart rarity ${rarity}!`);
-    return;
-  }
-
-  // wybieramy pierwszą z listy – możesz zmienić na wybór karty
-  const baseCard = available[0];
-
-  // odejmujemy 3
-  baseCard.count -= 3;
-
-  // znajdź kartę wyższego rarity (dowolną)
-  const pool = allCards.filter(c => c.rarity === next);
-
-  if (pool.length === 0) {
-    alert(`Brak kart o rarity ${next} w bazie allCards!`);
-    return;
-  }
-
-  const reward = pool[Math.floor(Math.random() * pool.length)];
-
-  // dodajemy kartę
-  let existing = player.cards.find(c => c.name === reward.name);
-  if (existing) existing.count++;
-  else player.cards.push({ ...reward, count: 1 });
-
-  alert(`✨ Ulepszenie! 3 × ${rarity} → 1 × ${next}\nOtrzymano: ${reward.name}`);
-
-  renderInventory();
-  saveGame();
-}
   
 function enterFusion() {
   switchScreen("lobbyScreen", "fusionScreen");
