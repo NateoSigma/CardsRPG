@@ -102,28 +102,36 @@ input {
 .card img {
   width: 100%;
 }
-..card[data-rarity="Rare"] {
-  box-shadow: 0 0 10px #00ff88;
+.card[data-rarity="Basic"] {
+  border: 2px solid black;
 }
+
+.card[data-rarity="Rare"] {
+  border: 2px solid #00cc44;
+}
+
 .card[data-rarity="Epic"] {
-  box-shadow: 0 0 12px #b300ff;
+  border: 2px solid #9933ff;
 }
+
 .card[data-rarity="Legendary"] {
-  box-shadow: 0 0 14px gold;
+  border: 2px solid yellow;
 }
+
 .card[data-rarity="Mythic"] {
-  box-shadow: 0 0 16px red;
+  border: 2px solid red;
 }
+
 .card[data-rarity="Eternal"] {
-  box-shadow: 0 0 18px violet;
+  border: 2px solid #3399ff;
 }
 
 .card[data-rarity="Exclusive"] {
-  box-shadow: 0 0 20px orange;
+  border: 2px solid orange;
 }
 
 .card[data-rarity="Boss"] {
-  border-color: purple;
+  border: 2px solid #000080;
   animation: bossGlow 1s infinite alternate;
 }
 
@@ -448,7 +456,7 @@ const allCards = [
   { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
  
  
-  { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.6, super: "Splash", img: "Jeff The Killer.png", rarity: "Boss" },
+  { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.37, super: "Splash", img: "Jeff The Killer.png", rarity: "Boss" },
   { name: "Nightmare Marionette", hp: 65, damage: 6, speed: 0.32, super: "AOE", img: "Nightmare Marionette.png", rarity: "Boss" },
   { name: "Sonic Exe Sticker", hp: 70, damage: 3, speed: 0.1, super: null, img: "Sonic Exe Sticker.png", rarity: "Boss" }
 ];
@@ -523,6 +531,7 @@ let currentBoss = null;
 let isBossBattle = false;
 let currentChallenge = null;
 let challengeLocked = false;
+
 let battleMode = "normal";
 let lastChallengeHour = null;
 let isChallengeBattle = false;
@@ -576,6 +585,10 @@ function loadGame() {
   }
 
 const currentHour = new Date().getHours();
+
+if (!player.potions) {
+  player.potions = { death: 0, heal: 0 };
+}
 
 if (save.challengeLocked && save.lastChallengeHour === currentHour) {
   challengeLocked = true;
@@ -1156,13 +1169,16 @@ function resetGame() {
     q.completed = false;
   });
 
-  // wyczyść obiekt gracza
-  player = {
-    name: "",
-    coins: 0,
-    cards: [],
-    team: []
-  };
+player = {
+  name: "",
+  coins: 0,
+  cards: [],
+  team: [],
+  potions: {
+    death: 0,
+    heal: 0
+  }
+};
 
   // wróć do ekranu tworzenia postaci
   switchScreen(
@@ -1428,28 +1444,134 @@ function enterBattle() {
     unit.targetSelector = select; // zapamiętujemy selector
   });
 
-  // Dodaj przycisk rozpoczęcia walki
-  const startBtn = document.createElement("button");
-  startBtn.textContent = "Rozpocznij walkę";
-  startBtn.className = "button";
-  startBtn.onclick = () => {
-    // ustawienie wybranych celów
-    playerUnits.forEach(unit => {
-      const targetIdx = parseInt(unit.targetSelector.value);
-      unit.target = enemyUnits[targetIdx];
-      // usuwamy selector po zatwierdzeniu
-      unit.element.removeChild(unit.targetSelector.previousSibling); // <br>
-      unit.element.removeChild(unit.targetSelector);
-    });
-    startBtn.remove(); // usuń przycisk po zatwierdzeniu
-    battleRunning = true;
-    playerUnits.forEach(u => autoAttack(u, enemyUnits));
-    enemyUnits.forEach(u => autoAttack(u, playerUnits));
-  };
-  pSide.appendChild(startBtn);
+const autoBtn = document.createElement("button");
+autoBtn.textContent = "⚡ Automatyczny pojedynek";
+autoBtn.className = "button";
+
+const stopBtn = document.createElement("button");
+stopBtn.textContent = "⛔ Stop";
+stopBtn.className = "button";
+stopBtn.style.background = "#552222";
+stopBtn.style.borderColor = "red";
+
+autoBtn.onclick = () => {
+  autoBattleMode = true;
+  startAutoBattle();
+};
+
+stopBtn.onclick = () => {
+  autoBattleMode = false;
+  battleRunning = false;
+  document.getElementById("battleLog").textContent = "⛔ Auto zatrzymane";
+};
+
+  pSide.appendChild(autoBtn);
+  pSide.appendChild(stopBtn);
   renderBattlePotions();
 }
 
+function startAutoBattle() {
+  if (!autoBattleMode) return;
+
+  const pSide = document.getElementById("playerSide");
+  const eSide = document.getElementById("enemySide");
+
+  // 🔥 najpierw czyścimy
+  pSide.innerHTML = "";
+  eSide.innerHTML = "";
+  document.getElementById("battleLog").textContent = "⚡ AUTO WALKA";
+
+  // 🧍‍♂️ tworzenie drużyny gracza
+  playerUnits = player.team.map(name => {
+    const card = allCards.find(c => c.name === name);
+    const el = createBattleCard(card);
+    pSide.appendChild(el);
+    return { team: "player", card: { ...card, currentHP: card.hp }, element: el };
+  });
+
+  // 👹 przeciwnicy
+  enemyUnits = [];
+  for (let i = 0; i < player.team.length; i++) {
+    const c = allCards[Math.floor(Math.random() * allCards.length)];
+    const el = createBattleCard(c);
+    eSide.appendChild(el);
+    enemyUnits.push({ team: "enemy", card: { ...c, currentHP: c.hp }, element: el });
+  }
+
+  // 🎯 auto target (smart)
+  playerUnits.forEach(unit => {
+    const weakest = enemyUnits.reduce((a, b) =>
+      a.card.currentHP < b.card.currentHP ? a : b
+    );
+    unit.target = weakest;
+  });
+
+  // 🔴 STOP (DODAJEMY NA KOŃCU)
+  let stopBtn = document.getElementById("autoStopBtn");
+
+  if (!stopBtn) {
+    stopBtn = document.createElement("button");
+    stopBtn.id = "autoStopBtn";
+    stopBtn.textContent = "⛔ Stop";
+    stopBtn.className = "button";
+    stopBtn.style.background = "#552222";
+    stopBtn.style.borderColor = "red";
+    stopBtn.style.display = "block";
+    stopBtn.style.margin = "20px auto";
+
+    stopBtn.onclick = () => {
+      autoBattleMode = false;
+      battleRunning = false;
+      document.getElementById("battleLog").textContent = "⛔ Auto zatrzymane";
+
+      stopBtn.remove();
+
+      setTimeout(() => {
+        switchScreen("battleScreen", "lobbyScreen");
+      }, 800);
+    };
+  }
+
+  // 🔥 zawsze dodajemy go pod kartami
+  pSide.appendChild(stopBtn);
+
+  // ⚔️ start walki
+  battleRunning = true;
+
+  playerUnits.forEach(u => autoAttack(u, enemyUnits));
+  enemyUnits.forEach(u => autoAttack(u, playerUnits));
+}
+
+function createAutoStopButton() {
+  let stopBtn = document.getElementById("autoStopBtn");
+
+  // jeśli już istnieje → nie twórz drugi raz
+  if (stopBtn) return;
+
+  stopBtn = document.createElement("button");
+  stopBtn.id = "autoStopBtn";
+  stopBtn.textContent = "⛔ Stop";
+  stopBtn.className = "button";
+  stopBtn.style.background = "#552222";
+  stopBtn.style.borderColor = "red";
+  stopBtn.style.display = "block";
+  stopBtn.style.margin = "20px auto";
+
+  stopBtn.onclick = () => {
+    autoBattleMode = false;
+    battleRunning = false;
+    document.getElementById("battleLog").textContent = "⛔ Auto zatrzymane";
+
+    // usuń przycisk po zatrzymaniu
+    stopBtn.remove();
+
+    setTimeout(() => {
+      switchScreen("battleScreen", "lobbyScreen");
+    }, 800);
+  };
+
+  document.getElementById("playerSide").appendChild(stopBtn);
+}
 
 function checkPlayerDefeat() {
   if (alive(playerUnits).length === 0) {
@@ -1486,7 +1608,9 @@ function endBattle(message) {
       player.cards.push({ ...currentBoss, count: 1, addedAt: Date.now() });
     }
 
-    alert(`🔥 NIESAMOWITE! Zdobyłeś kartę BOSSA: ${currentBoss.name}!`);
+    if (!autoBattleMode) {
+      alert(`🔥 NIESAMOWITE! Zdobyłeś kartę BOSSA: ${currentBoss.name}!`);
+    }
   } else {
     alert("Pokonałeś bossa, ale nic nie wypadło...");
   }
@@ -1521,9 +1645,14 @@ function endBattle(message) {
   saveGame();
 
   setTimeout(() => {
-    switchScreen("battleScreen", "lobbyScreen");
-    battleMode = "normal";
-  }, 2000);
+
+    if (autoBattleMode) {
+      startAutoBattle();
+    } else {
+      switchScreen("battleScreen", "lobbyScreen");
+      battleMode = "normal";
+    }
+  }, 1000);
 }
 
 function alive(arr) {
@@ -1586,11 +1715,16 @@ async function attack(attacker, enemies) {
 function createBattleCard(card) {
   const div = document.createElement("div");
   div.className = "card";
+
+  // 🔥 poprawka
+  div.setAttribute("data-rarity", card.rarity);
+
   div.innerHTML = `
     <img src="${card.img}">
     <strong>${card.name}</strong><br>
     <div class="hp-bar-bg"><div class="hp-bar"></div></div>
   `;
+
   return div;
 }
 
@@ -1683,7 +1817,9 @@ if (alive(enemies).length === 0) {
         if (reward > 0) {
           player.coins = Number(player.coins) + reward;
           document.getElementById("coinsDisplay").textContent = player.coins;
-          alert(`💰 Zgineło ${defeatedEnemiesThisBattle} Postaci i zdobyłeś ${reward} Coins!`);
+          if (!autoBattleMode) {
+            alert(`💰 Zgineło ${defeatedEnemiesThisBattle} Postaci i zdobyłeś ${reward} Coins!`);
+          }
         }
 
         if (!isBossBattle) {
@@ -1699,7 +1835,12 @@ if (isChallengeBattle && playerUnits.length === 1 && alive(playerUnits).length >
   updateQuestProgress("challengeOneUnitWin");    
 }
 
-endBattle("🏆 Wygrałeś!");
+if (autoBattleMode) {
+  endBattle(""); // brak komunikatu
+} else {
+  endBattle("🏆 Wygrałeś!");
+}
+
       return;
     }
 
