@@ -4,38 +4,141 @@
 <meta charset="UTF-8">
 <title>Karciana RPG</title>
 <style>
+
 body {
-  background: #111;
+  background: radial-gradient(circle at top, #1a1a1a, #000);
   color: white;
   font-family: Arial;
   text-align: center;
+}
+
+.attack {
+  animation: attackMove 0.2s;
+}
+
+@keyframes attackMove {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+p, h1, h2, h3, h4, h5, h6, span, small, button {
+  color: white;
+}
+
+* {
+  color: white !important;
+}
+
+@media (max-width: 600px) {
+  .card {
+    width: 100px;
+    font-size: 12px;
+  }
+
+  .button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+.button {
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #333, #222);
+  border: 2px solid #888;
+  border-radius: 10px;
+  transition: all 0.2s;
+  color: white;
+  font-weight: bold;
+}
+
+.button:hover {
+  background: #555;
+  border-color: white;
+  transform: scale(1.05);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+input {
+  color: white;
+  background: #222;
+}
+
+.someClass {
+  color: white !important;
 }
 
 /* Ekrany */
 .screen { display: none; }
 .active { display: block; }
 
-/* Karty */
 .card {
-  width: 130px;
-  padding: 10px;
+  width: 140px;
+  padding: 12px;
   margin: 10px;
-  background: #222;
-  border-radius: 10px;
+  background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+  border-radius: 14px;
   display: inline-block;
   border: 2px solid #666;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.9);
+}
+
 .card img {
   width: 100%;
 }
-.card[data-rarity="Basic"] { border-color: #444; }
-.card[data-rarity="Rare"] { border-color: #00ff88; }
-.card[data-rarity="Epic"] { border-color: #b300ff; }
-.card[data-rarity="Legendary"] { border-color: #ffd700; }
-.card[data-rarity="Mythic"] { border-color: #ff3333; }
-.card[data-rarity="Eternal"] { border-color: #8b00ff; }
-.card[data-rarity="Exclusive"] { border-color: orange; }
+..card[data-rarity="Rare"] {
+  box-shadow: 0 0 10px #00ff88;
+}
+.card[data-rarity="Epic"] {
+  box-shadow: 0 0 12px #b300ff;
+}
+.card[data-rarity="Legendary"] {
+  box-shadow: 0 0 14px gold;
+}
+.card[data-rarity="Mythic"] {
+  box-shadow: 0 0 16px red;
+}
+.card[data-rarity="Eternal"] {
+  box-shadow: 0 0 18px violet;
+}
 
+.card[data-rarity="Exclusive"] {
+  box-shadow: 0 0 20px orange;
+}
+
+.card[data-rarity="Boss"] {
+  border-color: purple;
+  animation: bossGlow 1s infinite alternate;
+}
+
+.card[data-rarity="Boss"]::after {
+  content: "👑";
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  font-size: 18px;
+}
+
+@keyframes bossGlow {
+  from { box-shadow: 0 0 5px purple; }
+  to { box-shadow: 0 0 20px violet; }
+}
 .hp-bar-bg {
   width: 100%;
   height: 12px;
@@ -43,11 +146,13 @@ body {
   border-radius: 6px;
   margin-top: 5px;
 }
+
 .hp-bar {
   height: 12px;
-  background: red;
+  background: linear-gradient(to right, red, orange);
   width: 100%;
   border-radius: 6px;
+  transition: width 0.3s ease;
 }
 
 /* Walka */
@@ -80,7 +185,7 @@ body {
 <div id="createScreen" class="screen active">
   <h2>Wpisz nazwę użytkownika</h2>
   <input type="text" id="playerName" placeholder="Nazwa">
-  <button class="button" onclick="createPlayer()">Start</button>
+  <button class="button" onclick="clickSound(); createPlayer()">Start</button>
 </div>
 
 <!-- ✅ LOBBY -->
@@ -88,32 +193,36 @@ body {
   <h2>Witaj, <span id="nameDisplay"></span>!</h2>
   <p>Coins: <span id="coinsDisplay"></span></p>
 
-  <button class="button" onclick="goInventory()">Ekwipunek</button>  
-  <button class="button" onclick="enterPotions()">🧪 Mikstury</button>
-  <button class="button" onclick="enterShop()">Sklep</button>
-  <button class="button" onclick="enterFusion()">⚗️ Fuzje</button>
-  <button class="button" onclick="enterQuests()">🟠 Questy</button>
-  <button class="button" onclick="enterBattle()">⚔ Pojedynek</button>
-  <button class="button" onclick="enterChallenges()">⏰ Wyzwania</button>
-  <button class="button" onclick="enterSettings()">⚙ Ustawienia</button>
+  <button class="button" onclick="clickSound(); goInventory()">Ekwipunek</button>  
+  <button class="button" onclick="clickSound(); enterPotions()">🧪 Mikstury</button>
+  <button class="button" onclick="clickSound(); enterShop()">Sklep</button>
+  <button class="button" onclick="clickSound(); enterFusion()">⚗️ Fuzje</button>
+  <button class="button" onclick="clickSound(); enterQuests()">🟠 Questy</button>
+  <button class="button" onclick="clickSound(); enterBattle()">⚔ Pojedynek</button>
+  <button class="button" style="border-color:purple;" onclick="clickSound(); enterBossBattle()">👑 Boss Fight</button>
+  <button class="button" onclick="clickSound(); enterChallenges()">⏰ Wyzwania</button>
+  <button class="button" onclick="clickSound(); enterSettings()">⚙ Ustawienia</button>
 </div>
 
 <!-- ✅ EKWIPUNEK -->
 <div id="inventoryScreen" class="screen">
   <h2>Twoje karty</h2>
-  <div id="inventory"></div>
+  
+  <div class="container">
+    <div id="inventory"></div>
+  </div>
 
   <h3>Twoja drużyna (max 3)</h3>
   <div id="team"></div>
 
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
 <!-- ✅ MIKSTURY -->
 <div id="potionsScreen" class="screen">
   <h2>🧪 Twoje mikstury</h2>
   <div id="potionsList"></div>
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
 <!-- ✅ FUZJE -->
@@ -122,21 +231,21 @@ body {
   <p>Połącz odpowiednie postacie, aby stworzyć nowe!</p>
   <div id="fusionList"></div>
 
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
 <!-- ✅ QUESTY -->
 <div id="questScreen" class="screen">
   <h2>🟠 Zadania (Questy)</h2>
   <div id="questList"></div>
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
 <!-- ✅ USTAWIENIA -->
 <div id="settingsScreen" class="screen">
   <h2>Ustawienia</h2>
 
-  <button class="button" onclick="resetGame()" style="background:#550000; border-color:red;">
+  <button class="button" onclick="clickSound(); resetGame()" style="background:#550000; border-color:red;">
     🔥 RESETUJ CAŁĄ GRĘ
   </button>
 
@@ -146,11 +255,11 @@ body {
   </p>
   
   <div id="musicControls">
-    <button onclick="toggleMusic()">🎵 Play / Pause</button>
+    <button class="button" onclick="clickSound(); toggleMusic()">🎵 Play / Pause</button>
     <input type="range" min="0" max="1" step="0.01" value="0.5" onchange="changeMusicVolume(this.value)">
   </div>
 
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
 <!-- ✅ SKLEP -->
@@ -160,19 +269,19 @@ body {
   <div style="margin-bottom:20px;">
   <p>🎁 <b>Starter Pack</b> – 50 Coins</p>
   <p><small>70% Basic, 25% Rare, 5% Epic</small></p>
-  <button class="button" style="background:#446622;" onclick="buyStarterPack()">Kup Starter Pack</button>
+  <button class="button" style="background:#446622;" onclick="clickSound(); buyStarterPack()">Kup Starter Pack</button>
 </div>
 
   <div style="margin-bottom:20px;">
     <p>💼 <b>Zwykła Paczka</b> – 150 Coins</p>
     <p><small>54% Basic, 26% Rare, 15% Epic, 4% Legendary, 0.9% Mythic, 0.1% Eternal</small></p>
-    <button class="button" onclick="buyPack()">Kup zwykłą paczkę</button>
+    <button class="button" onclick="clickSound(); buyPack()">Kup zwykłą paczkę</button>
   </div>
 
   <div style="margin-bottom:20px;">
     <p>🌟 <b>Super Pack</b> – 600 Coins</p>
     <p><small>50% Rare, 30% Epic, 15% Legendary, 4.5% Mythic, 0.5% Eternal</small></p>
-    <button class="button" style="background:#224466;" onclick="buySuperPack()">Kup Super Pack</button>
+    <button class="button" style="background:#224466;" onclick="clickSound(); buySuperPack()">Kup Super Pack</button>
   </div>
   
 <h2>🧪 Mikstury</h2>
@@ -180,16 +289,16 @@ body {
 <div style="margin-bottom:20px;">
   <p>☠️ <b>Potion Śmierci</b></p>
   <p><small>Zabija 1 przeciwnika</small></p>
-  <button class="button" onclick="buyPotion('death', 5000)">Kup za 5000</button>
+  <button class="button" onclick="clickSound(); buyPotion('death', 5000)">Kup za 5000</button>
 </div>
 
 <div style="margin-bottom:20px;">
   <p>❤️ <b>Potion Życia</b></p>
   <p><small>Ulecza drużynę o 30% HP</small></p>
-  <button class="button" onclick="buyPotion('heal', 250)">Kup za 250</button>
+  <button class="button" onclick="clickSound(); buyPotion('heal', 250)">Kup za 250</button>
 </div>
 
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
 <!-- ✅ POJEDYNEK -->
@@ -208,9 +317,10 @@ body {
   <p id="challengeTimer"></p>
   <div id="challengeList"></div>
 
-  <button class="button" onclick="backToLobby()">Powrót</button>
+  <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
+<audio id="bossSound"></audio>
 <audio id="bgMusic" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -242,70 +352,105 @@ const allCards = [
 
   { name: "Acronix", hp: 13, damage: 2, speed: 0.5, super: null, img: "Acronix.png", rarity: "Basic" },
   { name: "Alex", hp: 20, damage: 1, speed: 0.55, super: null, img: "Alex.png", rarity: "Basic" },
-  { name: "Allay", hp: 10, damage: 1, speed: 0.3, super: null, img: "Allay.png", rarity: "Basic" },
+  { name: "Allay", hp: 10, damage: 1, speed: 0.3, super: null, img: "Allay.gif", rarity: "Basic" },
   { name: "Bee", hp: 5, damage: 1, speed: 0.5, super: null, img: "Bee.png", rarity: "Basic" },
   { name: "Chicken Jockey", hp: 24, damage: 4, speed: 0.9, super: null, img: "Chicken Jockey.png", rarity: "Basic" },
   { name: "Freddy", hp: 30, damage: 6, speed: 1.3, super: null, img: "Freddy.png", rarity: "Basic" },
   { name: "King", hp: 16, damage: 3, speed: 1.7, super: "AOE", img: "King.png", rarity: "Basic" },
   { name: "Luz", hp: 10, damage: 1, speed: 0.5, super: null, img: "Luz.png", rarity: "Basic" },
   { name: "Pink Sheep", hp: 10, damage: 3, speed: 0.9, super: null, img: "Pink Sheep.png", rarity: "Basic" },
+  { name: "Poppy", hp: 25, damage: 4, speed: 1.0, super: null, img: "Poppy.png", rarity: "Basic" },
   { name: "Posuch", hp: 20, damage: 3, speed: 0.95, super: null, img: "Posuch.png", rarity: "Basic" },
   { name: "Skeleton", hp: 20, damage: 5, speed: 1.0, super: null, img: "Skeleton.png", rarity: "Basic" },
   { name: "Snow Golem", hp: 4, damage: 1, speed: 0.7, super: null, img: "Snow Golem.png", rarity: "Basic" },
+  { name: "Spike", hp: 20, damage: 5, speed: 1.0, super: "Splash", img: "Spike.png", rarity: "Basic" },
   { name: "Toy Bonnie", hp: 19, damage: 5, speed: 0.8, super: "AOE", img: "Toy Bonnie.png", rarity: "Basic" },
   { name: "Vanessa", hp: 10, damage: 2, speed: 0.4, super: null, img: "Vanessa.png", rarity: "Basic" },
   { name: "Wooly", hp: 12, damage: 2, speed: 0.75, super: null, img: "Wooly.png", rarity: "Basic" },
   { name: "Zombie", hp: 20, damage: 3, speed: 0.95, super: null, img: "Zombie.png", rarity: "Basic" },
 
+
+
   { name: "Arctic Fox", hp: 18, damage: 4, speed: 1.0, super: null, img: "Arctic Fox.png", rarity: "Rare" },
-  { name: "Baby Zombie", hp: 20, damage: 3, speed: 0.5, super: null, img: "Baby Zombie.png", rarity: "Rare" },
+  { name: "Baby Zombie", hp: 20, damage: 3, speed: 0.5, super: null, img: "Baby Zombie.gif", rarity: "Rare" },
   { name: "Balloon Boy", hp: 20, damage: 8, speed: 1.65, super: "Splash", img: "Balloon Boy.png", rarity: "Rare" },
+  { name: "Blaze", hp: 20, damage: 8, speed: 1.0, super: "Splash", img: "Blaze.gif", rarity: "Rare" },
   { name: "Bonnie", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Bonnie.png", rarity: "Rare" },
   { name: "Chica", hp: 30, damage: 9, speed: 2.0, super: "Splash", img: "Chica.png", rarity: "Rare" },
-  { name: "Helpy", hp: 28, damage: 4, speed: 1.0, super: "AOE", img: "Helpy.png", rarity: "Rare" },
+  { name: "Helpy", hp: 28, damage: 4, speed: 1.0, super: "AOE", img: "Helpy.gif", rarity: "Rare" },
   { name: "Piglin Brutal", hp: 20, damage: 9, speed: 0.9, super: null, img: "Piglin Brutal.png", rarity: "Rare" },
+  { name: "Slime", hp: 16, damage: 4, speed: 0.8, super: null, img: "Slime.png", rarity: "Rare" },
   { name: "Spider Jockey", hp: 36, damage: 9, speed: 1.1, super: null, img: "Spider Jockey.png", rarity: "Rare" },
   { name: "Spider Man", hp: 10, damage: 8, speed: 0.84, super: null, img: "Spider Man.png", rarity: "Rare" },
   { name: "Tv Man", hp: 20, damage: 5, speed: 0.8, super: "AOE", img: "Tv Man.png", rarity: "Rare" },
   { name: "Vaggie", hp: 22, damage: 8, speed: 1.5, super: null, img: "Vaggie.png", rarity: "Rare" },
-
+  { name: "Wither Skeleton", hp: 21, damage: 5, speed: 0.75, super: null, img: "Wither Skeleton.png", rarity: "Rare" },
+  
+  
+  
   { name: "Afton", hp: 20, damage: 9, speed: 0.7, super: null, img: "Afton.png", rarity: "Epic" },
   { name: "Arin", hp: 10, damage: 20, speed: 2.0, super: "Splash", img: "Arin.png", rarity: "Epic" },
   { name: "Demogorgon", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Demogorgon.png", rarity: "Epic" },
   { name: "Doey", hp: 42, damage: 8, speed: 1.5, super: "Splash", img: "Doey.png", rarity: "Epic" },
-  { name: "Enderman", hp: 40, damage: 3, speed: 1.0, super: null, img: "Enderman.png", rarity: "Epic" },
+  { name: "Drawing Dog Day", hp: 15, damage: 8, speed: 0.46, super: null, img: "Drawing Dog Day.png", rarity: "Epic" },
+  { name: "Enderman", hp: 40, damage: 3, speed: 1.0, super: null, img: "Enderman.gif", rarity: "Epic" },
   { name: "Foxy", hp: 30, damage: 7, speed: 0.7, super: null, img: "Foxy.png", rarity: "Epic" },
   { name: "Han Solo", hp: 20, damage: 8, speed: 0.8, super: null, img: "Han Solo.png", rarity: "Epic" },
   { name: "Hydreigon", hp: 30, damage: 3, speed: 0.8, super: "AOE", img: "Hydreigon.png", rarity: "Epic" },
+  { name: "Leon", hp: 18, damage: 6, speed: 1.2, super: null, img: "Leon.png", rarity: "Epic" },
   { name: "Nightmare Chica", hp: 45, damage: 18, speed: 3.0, super: "Splash", img: "Nightmare Chica.png", rarity: "Epic" },
   { name: "Sonic", hp: 14, damage: 7, speed: 0.3, super: null, img: "Sonic.png", rarity: "Epic" },
   { name: "Superman", hp: 20, damage: 12, speed: 0.91, super: null, img: "Superman.png", rarity: "Epic" },
   { name: "The Knocer", hp: 20, damage: 12, speed: 0.85, super: null, img: "The Knocer.png", rarity: "Epic" },
   { name: "Titan Luz", hp: 20, damage: 8, speed: 0.7, super: null, img: "Titan Luz.png", rarity: "Epic" },
 
+
+
   { name: "Alastor", hp: 60, damage: 12, speed: 1.0, super: null, img: "Alastor.png", rarity: "Legendary" },
   { name: "Anomaly", hp: 50, damage: 2, speed: 0.3, super: "AOE", img: "Anomaly.png", rarity: "Legendary" },
+  { name: "Blastling Enderman", hp: 40, damage: 12, speed: 0.75, super: null, img: "Blastling.png", rarity: "Legendary" },
   { name: "Colton Anomaly", hp: 50, damage: 14, speed: 1.0, super: null, img: "Colton Anomaly.png", rarity: "Legendary" },
+  { name: "Cube Seek", hp: 40, damage: 9, speed: 0.5, super: null, img: "Cube Seek.gif", rarity: "Legendary" },
   { name: "Darth Vader", hp: 25, damage: 10, speed: 0.85, super: null, img: "Darth Vader.png", rarity: "Legendary" },
-  { name: "Huggy Wuggy", hp: 50, damage: 11, speed: 1.0, super: null, img: "Huggy Wuggy.png", rarity: "Legendary" },
+  { name: "Figure", hp: 70, damage: 12, speed: 0.75, super: "Splash", img: "Figure.gif", rarity: "Legendary" },
+  { name: "Guardian", hp: 30, damage: 0.5, speed: 0.05, super: null, img: "Guardian.gif", rarity: "Legends" },
+  { name: "Huggy Wuggy", hp: 50, damage: 11, speed: 0.8, super: null, img: "Huggy Wuggy.png", rarity: "Legendary" },
+  { name: "Kissy Missy", hp: 50, damage: 9, speed: 1.0, super: null, img: "Kissy Missy.png", rarity: "Legendary" },
   { name: "Large Astro TV Man", hp: 32, damage: 8, speed: 0.6, super: "AOE", img: "Large Astro TV Man.png", rarity: "Legendary" },
   { name: "Mimicer", hp: 50, damage: 14, speed: 1.0, super: null, img: "Mimicer.png", rarity: "Legendary" },
   { name: "Shadow", hp: 16, damage: 5, speed: 0.2, super: null, img: "Shadow.png", rarity: "Legendary" },
   { name: "Vox", hp: 60, damage: 7, speed: 0.75, super: "AOE", img: "Vox.png", rarity: "Legendary" },
 
+
+
+  { name: "Cat Nap", hp: 45, damage: 10, speed: 1.0, super: null, img: "Cat Nap.png", rarity: "Mythic" },
   { name: "DJ Vox", hp: 67, damage: 8, speed: 0.6, super: "AOE", img: "DJ Vox.png", rarity: "Mythic" },
-  { name: "R2 D2", hp: 46, damage: 1, speed: 0.15, super: "AOE", img: "R2 D2.png", rarity: "Mythic" },
+  { name: "Elder Guardian", hp: 45, damage: 0.75, speed: 0.05, super: null, img: "Elder Guardian.png", rarity: "Mythic" },
+  { name: "R2 D2", hp: 46, damage: 1, speed: 0.12, super: "AOE", img: "R2 D2.png", rarity: "Mythic" },
   { name: "The Man From The Shadow", hp: 40, damage: 20, speed: 1.0, super: null, img: "The Man From The Shadow.png", rarity: "Mythic" },
   { name: "Warden", hp: 50, damage: 18, speed: 1.1, super: "Splash", img: "Warden.png", rarity: "Mythic" },
   { name: "Zestial", hp: 60, damage: 15, speed: 1.0, super: null, img: "Zestial.png", rarity: "Mythic" },
-
-  { name: "H4CK3R", hp: 10, damage: 5, speed: 0.2, super: "AOE", img: "H4CK3R.png", rarity: "Eternal" },
-  { name: "Thanos", hp: 46, damage: 13, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Eternal" },
+  
+  
+  
+  { name: "Ancient Guardian", hp: 60, damage: 1, speed: 0.05, super: null, img: "Ancient Guardian.png", rarity: "Eternal" },
+  { name: "H4CK3R", hp: 10, damage: 3, speed: 0.1, super: "AOE", img: "H4CK3R.png", rarity: "Eternal" },
+  { name: "Lily", hp: 65, damage: 12, speed: 0.3, super: null, img: "Lily.png", rarity: "Eternal" },
+  { name: "Thanos", hp: 46, damage: 26, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Eternal" },
   { name: "The Deer", hp: 50, damage: 10, speed: 0.6, super: null, img: "The Deer.png", rarity: "Eternal" },
 
+
+
   { name: "Bekin", hp: 21, damage: 2, speed: 1.2, super: "AOE", img: "Bekin.png", rarity: "Exclusive" },
+  { name: "Permaton", hp: 40, damage: 21, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" },
   { name: "Zombox", hp: 80, damage: 10, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
-  { name: "Zombspri", hp: 40, damage: 12, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" }
+  { name: "Zombspri", hp: 40, damage: 12, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" },
+  { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
+ 
+ 
+  { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.6, super: "Splash", img: "Jeff The Killer.png", rarity: "Boss" },
+  { name: "Nightmare Marionette", hp: 65, damage: 6, speed: 0.32, super: "AOE", img: "Nightmare Marionette.png", rarity: "Boss" },
+  { name: "Sonic Exe Sticker", hp: 70, damage: 3, speed: 0.1, super: null, img: "Sonic Exe Sticker.png", rarity: "Boss" }
 ];
 
 const fusions = [
@@ -327,29 +472,55 @@ const fusions = [
     base2: "Afton",
     result: { name: "Zombspri", hp: 40, damage: 12, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" }
   },
+  {
+    id: 4,
+    base1: "Superman",
+    base2: "Afton",
+    result: { name: "Permaton", hp: 50, damage: 12, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" }
+  },
+  {
+    id: 5,
+    base1: "Baby Zombie",
+    base2: "Chica",
+    result: { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" }
+  },
 ];
 
 const challenges = [
   {
     id: 1,
     enemies: ["Baby Zombie","Baby Zombie","Baby Zombie","Baby Zombie","Baby Zombie"],
-    reward: { type: "coins", amount: 100 },
+    reward: { type: "coins", amount: 1000 },
     maxTeam: 2
   },
   {
     id: 2,
     enemies: ["Chicken Jockey","Spider Jockey"],
-    reward: { type: "card", card: "Baby Zombie" },
+    reward: { type: "card", card: "Foxy" },
     maxTeam: 3
   },
   {
     id: 3,
     enemies: ["Vox","Vox","DJ Vox"],
-    reward: { type: "card", card: "Alastor" },
+    reward: { type: "card", card: "Cat Nap" },
     maxTeam: 2
+  },
+  {
+    id: 1,
+    enemies: ["R2 D2","R2 D2","R2 D2"],
+    reward: { type: "coins", amount: 2000 },
+    maxTeam: 1
+  },
+  {
+    id: 1,
+    enemies: ["Guardian","Elder Guardian","Ancient Guardian"],
+    reward: { type: "coins", amount: 2500 },
+    maxTeam: 1
   }
 ];
 
+let currentBoss = null;
+let isBossBattle = false;
 let currentChallenge = null;
 let challengeLocked = false;
 let battleMode = "normal";
@@ -423,7 +594,6 @@ if (save.challengeLocked && save.lastChallengeHour === currentHour) {
   }
 }
 
-// 🎵 MUZYKA W TLE
 const bgMusic = document.getElementById("bgMusic");
 
 // automatyczna głośność 50%
@@ -436,6 +606,12 @@ function toggleMusic() {
   } else {
     bgMusic.pause();
   }
+}
+
+function clickSound() {
+  const audio = new Audio("click.mp3");
+  audio.volume = 0.3;
+  audio.play();
 }
 
 // zmiana głośności
@@ -452,7 +628,68 @@ window.addEventListener("load", () => {
     document.querySelector("#musicControls input").value = savedVolume;
   }
 });
-  
+
+function playBossSound(bossName) {
+  const audio = document.getElementById("bossSound");
+
+  let file = "";
+
+  if (bossName === "Sonic Exe Sticker") {
+    file = "SonicExeStricker.mp3";
+  } 
+  else if (bossName === "Nightmare Marionette") {
+    file = "NightmareMarionette.mp3";
+  } 
+  else if (bossName === "Jeff The Killer") {
+    file = "JeffTheKiller.mp3";
+  }
+
+  if (file) {
+    audio.src = file;
+    audio.volume = 0.7;
+    audio.play();
+  }
+}
+
+function enterBossBattle() {
+  if (player.team.length === 0) return alert("Wybierz drużynę!");
+
+  isBossBattle = true;
+
+  switchScreen("lobbyScreen", "battleScreen");
+
+  const pSide = document.getElementById("playerSide");
+  const eSide = document.getElementById("enemySide");
+
+  pSide.innerHTML = "";
+  eSide.innerHTML = "";
+
+  // gracz
+  playerUnits = player.team.map(name => {
+    const card = allCards.find(c => c.name === name);
+    const el = createBattleCard(card);
+    pSide.appendChild(el);
+    return { team: "player", card: { ...card, currentHP: card.hp }, element: el };
+  });
+
+const bosses = ["Sonic Exe Sticker", "Nightmare Marionette", "Jeff The Killer"];
+const randomBoss = bosses[Math.floor(Math.random() * bosses.length)];
+const boss = allCards.find(c => c.name === randomBoss);
+
+currentBoss = boss;
+  const el = createBattleCard(boss);
+  eSide.appendChild(el);
+
+  enemyUnits = [
+    { team: "enemy", card: { ...boss, currentHP: boss.hp }, element: el }
+  ];
+
+  battleRunning = true;
+
+  playerUnits.forEach(u => autoAttack(u, enemyUnits));
+  enemyUnits.forEach(u => autoAttack(u, playerUnits));
+}
+
 function enterFusion() {
   switchScreen("lobbyScreen", "fusionScreen");
   renderFusions();
@@ -518,7 +755,7 @@ const quests = [
     title: "Wygraj 10 walk",
     goal: 10,
     progress: 0,
-    reward: { type: "coins", amount: 200 },
+    reward: { type: "coins", amount: 100 },
     completed: false
   },
   {
@@ -526,7 +763,7 @@ const quests = [
     title: "Kup 3 paczki kart",
     goal: 3,
     progress: 0,
-    reward: { type: "exclusiveCard", card: "Spider Man" },
+    reward: { type: "coins", amount: "250" },
     completed: false
   },
   {
@@ -534,7 +771,7 @@ const quests = [
     title: "Kup 25 paczki kart",
     goal: 25,
     progress: 0,
-    reward: { type: "exclusiveCard", card: "Thanos" },
+    reward: { type: "coins", amount: "700" },
     completed: false
   },
   {
@@ -542,7 +779,7 @@ const quests = [
     title: "Otwórz Super Packa",
     goal: 1,
     progress: 0,
-    reward: { type: "exclusiveCard", card: "Superman" },
+    reward: { type: "coins", amount: "650" },
     completed: false
   },
   {
@@ -550,7 +787,7 @@ const quests = [
     title: "Wykonaj fuzję",
     goal: 1,
     progress: 0,
-    reward: { type: "exclusiveCard", card: "Demogorgon" }, 
+    reward: { type: "coins", amount: "300" },
     completed: false
   },
   {
@@ -558,7 +795,7 @@ const quests = [
     title: "Wygraj challenge 1 postacią",
     goal: 1,
     progress: 0,
-    reward: { type: "coins", amount: 2000 },
+    reward: { type: "coins", amount: 910 },
     completed: false
   }
 ];
@@ -603,14 +840,14 @@ function claimQuestReward(id) {
   if (!q || q.completed) return;
 
   if (q.reward.type === "coins") {
-    player.coins += q.reward.amount;
+    player.coins = Number(player.coins) + Number(q.reward.amount);
     alert(`💰 Otrzymano ${q.reward.amount} coins!`);
   } else if (q.reward.type === "exclusiveCard") {
     const card = allCards.find(c => c.name === q.reward.card);
     if (card) {
       let existing = player.cards.find(c => c.name === card.name);
       if (existing) existing.count++;
-      else player.cards.push({ ...card, count: 1 });
+      else player.cards.push({ ...currentBoss, count: 1, addedAt: Date.now() });
       alert(`🎴 Otrzymano kartę Exclusive: ${card.name}!`);
     }
   }
@@ -946,7 +1183,30 @@ function renderInventory() {
   let div = document.getElementById("inventory");
   div.innerHTML = "";
 
-  player.cards.forEach(card => {
+  const rarityOrder = {
+    "Basic": 1,
+    "Rare": 2,
+    "Epic": 3,
+    "Legendary": 4,
+    "Mythic": 5,
+    "Eternal": 6,
+    "Exclusive": 7,
+    "Boss": 8
+  };
+
+  // 🔥 SORTOWANIE
+  const sortedCards = [...player.cards].sort((a, b) => {
+    const rarityA = rarityOrder[a.rarity] || 999;
+    const rarityB = rarityOrder[b.rarity] || 999;
+
+    // najpierw rarity
+    if (rarityA !== rarityB) return rarityA - rarityB;
+
+    // potem kolejność zdobycia (jeśli masz addedAt)
+    return (a.addedAt || 0) - (b.addedAt || 0);
+  });
+
+  sortedCards.forEach(card => {
     const base = allCards.find(c => c.name === card.name);
     if (!base) return;
 
@@ -978,7 +1238,8 @@ function getSellValue(rarity) {
     case "Legendary": return 40;
     case "Mythic": return 70;
     case "Eternal": return 100;
-    case "Exclusive": return 150; // jeśli dodano nową rarowość
+    case "Exclusive": return 150;
+    case "Boss": return 600;
     default: return 0;
   }
 }
@@ -1000,7 +1261,7 @@ function sellCard(name) {
     player.team = player.team.filter(t => t !== name);
   }
 
-  player.coins += sellValue;
+  player.coins = Number(player.coins) + sellValue;
 
   alert(`💰 Sprzedano ${name} za ${sellValue} coins!`);
   document.getElementById("coinsDisplay").textContent = player.coins;
@@ -1053,7 +1314,7 @@ function renderTeam() {
       <p>Speed: ${c.speed}s</p>
       <p>Super: ${c.super || "Brak"}</p>
       <p>Rzadkość: ${c.rarity}</p>
-      <button onclick="removeFromTeam('${c.name}')">Usuń</button>
+      <button class="button" onclick="removeFromTeam('${c.name}')">Usuń</button>
     `;
     t.appendChild(div);
   });
@@ -1201,42 +1462,67 @@ function checkPlayerDefeat() {
 function endBattle(message) {
   battleRunning = false;
   isChallengeBattle = false;
+
   document.getElementById("battleLog").textContent = message;
 
   if (battleMode === "challenge") {
-  document.getElementById("battleLog").textContent = "🔥 TRYB WYZWANIA";
-}
+    document.getElementById("battleLog").textContent = "🔥 TRYB WYZWANIA\n" + message;
+  }
 
-  // ❌ blokada TYLKO dla challenge
+  // ❌ blokada tylko dla challenge
   if (battleMode === "challenge" && message.includes("Przegrałeś")) {
-  challengeLocked = true;
+    challengeLocked = true;
+  }
+  
+  if (isBossBattle && message.includes("Wygrałeś") && currentBoss) {
+    playBossSound(currentBoss.name);
+    const chance = Math.random() * 100;
+
+  if (chance < 1) {
+    let existing = player.cards.find(c => c.name === currentBoss.name);
+    if (existing) {
+      existing.count++;
+    } else {
+      player.cards.push({ ...currentBoss, count: 1, addedAt: Date.now() });
+    }
+
+    alert(`🔥 NIESAMOWITE! Zdobyłeś kartę BOSSA: ${currentBoss.name}!`);
+  } else {
+    alert("Pokonałeś bossa, ale nic nie wypadło...");
+  }
 }
 
   // 🏆 nagrody TYLKO dla challenge
   if (battleMode === "challenge" && message.includes("Wygrałeś") && currentChallenge) {
-  
+
+    // ✅ quest tylko dla challenge
     if (player.team.length === 1) {
       updateQuestProgress("challengeSoloWin");
     }
 
     if (currentChallenge.reward.type === "coins") {
-      player.coins += currentChallenge.reward.amount;
+      player.coins = Number(player.coins) + currentChallenge.reward.amount;
       alert(`💰 Otrzymano ${currentChallenge.reward.amount} Coins!`);
     } else {
       const card = allCards.find(c => c.name === currentChallenge.reward.card);
-      let existing = player.cards.find(c => c.name === card.name);
-      if (existing) existing.count++;
-      else player.cards.push({ ...card, count: 1 });
+      if (card) {
+        let existing = player.cards.find(c => c.name === card.name);
+        if (existing) existing.count++;
+        else player.cards.push({ ...card, count: 1 });
 
-      alert(`🎴 Otrzymano: ${card.name}`);
+        alert(`🎴 Otrzymano: ${card.name}`);
+      }
     }
   }
+
+  // reset boss flagi
+  isBossBattle = false;
 
   saveGame();
 
   setTimeout(() => {
     switchScreen("battleScreen", "lobbyScreen");
-    battleMode = "normal"; // reset trybu
+    battleMode = "normal";
   }, 2000);
 }
 
@@ -1395,19 +1681,22 @@ if (alive(enemies).length === 0) {
         else if (defeatedEnemiesThisBattle === 1) reward = 10;
 
         if (reward > 0) {
-          player.coins += reward;
+          player.coins = Number(player.coins) + reward;
           document.getElementById("coinsDisplay").textContent = player.coins;
-          alert(`💰 Pokonano ${defeatedEnemiesThisBattle} Postaci i zdobyłeś ${reward} Coins!`);
+          alert(`💰 Zgineło ${defeatedEnemiesThisBattle} Postaci i zdobyłeś ${reward} Coins!`);
         }
 
-        updateQuestProgress("winBattle");
+        if (!isBossBattle) {
+          updateQuestProgress("winBattle");
+        }
+    
         saveGame();
       }
 
       defeatedEnemiesThisBattle = 0;
 
 if (isChallengeBattle && playerUnits.length === 1 && alive(playerUnits).length > 0) {
-  updateQuestProgress("challengeOneUnitWin");
+  updateQuestProgress("challengeOneUnitWin");    
 }
 
 endBattle("🏆 Wygrałeś!");
