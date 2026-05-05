@@ -47,6 +47,11 @@ p, h1, h2, h3, h4, h5, h6, span, small, button {
   }
 }
 
+.card:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 .button {
   padding: 10px 20px;
   margin: 10px;
@@ -163,7 +168,13 @@ input {
   transition: width 0.3s ease;
 }
 
-/* Walka */
+#indexList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
 .battleArea {
   display: flex;
   justify-content: space-around;
@@ -207,6 +218,7 @@ input {
   <button class="button" onclick="clickSound(); enterFusion()">⚗️ Fuzje</button>
   <button class="button" onclick="clickSound(); enterQuests()">🟠 Questy</button>
   <button class="button" onclick="clickSound(); enterBattle()">⚔ Pojedynek</button>
+  <button class="button" onclick="enterMonsterVsHuman()">👹 Potwór VS Człowiek</button>
   <button class="button" style="border-color:purple;" onclick="clickSound(); enterBossBattle()">👑 Boss Fight</button>
   <button class="button" onclick="clickSound(); enterChallenges()">⏰ Wyzwania</button>
   <button class="button" onclick="clickSound(); enterSettings()">⚙ Ustawienia</button>
@@ -242,14 +254,12 @@ input {
   <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
-<!-- ✅ QUESTY -->
 <div id="questScreen" class="screen">
   <h2>🟠 Zadania (Questy)</h2>
   <div id="questList"></div>
   <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
 
-<!-- ✅ USTAWIENIA -->
 <div id="settingsScreen" class="screen">
   <h2>Ustawienia</h2>
 
@@ -358,6 +368,13 @@ const allCards = [
   rarity: "Basic" 
 },
 
+  { name: "Adrian", hp: 20, damage: 4, speed: 0.2, img: "humanAdrian.png", rarity: "Basic", type: "human" },
+  { name: "Karol", hp: 18, damage: 6, speed: 0.2, img: "humanKarol.png", rarity: "Basic", type: "human" },
+  { name: "Milena", hp: 16, damage: 8, speed: 0.1, img: "humanMilena.png", rarity: "Epic", type: "human" },
+  { name: "Nastia", hp: 20, damage: 5, speed: 0.15, img: "humanNastia.png", rarity: "Rare", type: "human" },
+  { name: "Natalka", hp: 20, damage: 8, speed: 0.12, img: "humanNatalka.png", rarity: "Rare", type: "human" },
+  { name: "Oliwier", hp: 22, damage: 5, speed: 0.2, img: "humanOliwier.png", rarity: "Epic", type: "human" },
+
   { name: "Acronix", hp: 13, damage: 2, speed: 0.5, super: null, img: "Acronix.png", rarity: "Basic" },
   { name: "Alex", hp: 20, damage: 1, speed: 0.55, super: null, img: "Alex.png", rarity: "Basic" },
   { name: "Allay", hp: 10, damage: 1, speed: 0.3, super: null, img: "Allay.gif", rarity: "Basic" },
@@ -446,11 +463,13 @@ const allCards = [
   { name: "Lily", hp: 65, damage: 12, speed: 0.3, super: null, img: "Lily.png", rarity: "Eternal" },
   { name: "Thanos", hp: 46, damage: 26, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Eternal" },
   { name: "The Deer", hp: 50, damage: 10, speed: 0.6, super: null, img: "The Deer.png", rarity: "Eternal" },
+  { name: "Shadow Bonnie", hp: 36, damage: 5, speed: 0.1, super: "AOE", img: "Shadow Bonnie.png", rarity: "Eternal" },
 
 
 
   { name: "Bekin", hp: 21, damage: 2, speed: 1.2, super: "AOE", img: "Bekin.png", rarity: "Exclusive" },
   { name: "Permaton", hp: 40, damage: 21, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" },
+  { name: "Shadow Jeff The Killer", hp: 111, damage: 17, speed: 0.36, super: "AOE", img: "Shadow Jeff The Killer.png", rarity: "Exclusive" },
   { name: "Zombox", hp: 80, damage: 10, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
   { name: "Zombspri", hp: 40, damage: 12, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" },
   { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
@@ -482,8 +501,8 @@ const fusions = [
   },
   {
     id: 4,
-    base1: "Superman",
-    base2: "Afton",
+    base1: "Afton",
+    base2: "Superman",
     result: { name: "Permaton", hp: 50, damage: 12, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" }
   },
   {
@@ -492,46 +511,55 @@ const fusions = [
     base2: "Chica",
     result: { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" }
   },
+  {
+    id: 6,
+    base1: "Shadow Bonnie",
+    base2: "Jeff The Killer",
+    result: { name: "Shadow Jeff The Killer", hp: 111, damage: 17, speed: 0.36, super: null, img: "Shadow Jeff The Killer.png", rarity: "Exclusive" }
+  }
 ];
 
 const challenges = [
   {
     id: 1,
     enemies: ["Baby Zombie","Baby Zombie","Baby Zombie","Baby Zombie","Baby Zombie"],
-    reward: { type: "coins", amount: 1000 },
+    reward: { type: "coins", amount: 100 },
     maxTeam: 2
   },
   {
     id: 2,
     enemies: ["Chicken Jockey","Spider Jockey"],
-    reward: { type: "card", card: "Foxy" },
+    reward: { type: "coins", amount: 40 },
     maxTeam: 3
   },
   {
     id: 3,
     enemies: ["Vox","Vox","DJ Vox"],
-    reward: { type: "card", card: "Cat Nap" },
+    reward: { type: "coins", amount: 250 },
     maxTeam: 2
   },
   {
-    id: 1,
+    id: 4,
     enemies: ["R2 D2","R2 D2","R2 D2"],
-    reward: { type: "coins", amount: 2000 },
+    reward: { type: "coins", amount: 250 },
     maxTeam: 1
   },
   {
-    id: 1,
+    id: 5,
     enemies: ["Guardian","Elder Guardian","Ancient Guardian"],
-    reward: { type: "coins", amount: 2500 },
+    reward: { type: "coins", amount: 300 },
     maxTeam: 1
+  },
+  {
+    id: 6,
+    enemies: ["Jeff The Killer","Jeff The Killer"],
+    reward: { type: "coins", amount: 500 },
+    maxTeam: 3
   }
 ];
 
 let currentBoss = null;
 let isBossBattle = false;
-let currentChallenge = null;
-let challengeLocked = false;
-
 let battleMode = "normal";
 let lastChallengeHour = null;
 let isChallengeBattle = false;
@@ -633,35 +661,109 @@ function changeMusicVolume(value) {
   localStorage.setItem("musicVolume", value);
 }
 
-// ładowanie zapisanej głośności
-window.addEventListener("load", () => {
-  const savedVolume = localStorage.getItem("musicVolume");
-  if (savedVolume !== null) {
-    bgMusic.volume = savedVolume;
-    document.querySelector("#musicControls input").value = savedVolume;
-  }
-});
+function enterMonsterVsHuman() {
+  battleMode = "monsterVsHuman";
+  isChallengeBattle = false;
 
-function playBossSound(bossName) {
+  // 🛑 sprawdzenia
+  if (player.team.length === 0) {
+    alert("Wybierz postać!");
+    return;
+  }
+
+  if (player.team.length > 1) {
+    alert("W tym trybie możesz mieć tylko 1 postać!");
+    return;
+  }
+
+  const playerCard = allCards.find(c => c.name === player.team[0]);
+  if (!playerCard) {
+    alert("Nie znaleziono postaci!");
+    return;
+  }
+
+  // 👥 ludzie (TWORZYMY NAJPIERW!)
+  const humanCards = allCards.filter(c => c.type === "human");
+  if (humanCards.length === 0) {
+    alert("Brak ludzi!");
+    return;
+  }
+
+  // 🎮 przejście do walki
+  switchScreen("lobbyScreen", "battleScreen");
+
+  const pSide = document.getElementById("playerSide");
+  const eSide = document.getElementById("enemySide");
+
+  pSide.innerHTML = "";
+  eSide.innerHTML = "";
+
+  // 👥 liczba przeciwników
+  const enemyCount = Math.floor(Math.random() * 4) + 1;
+
+  document.getElementById("battleLog").textContent =
+    `👹 Potwór VS Człowiek (${enemyCount} przeciwników)`;
+
+  // 🧍 gracz (1 jednostka)
+  const playerEl = createBattleCard(playerCard);
+  pSide.appendChild(playerEl);
+
+  playerUnits = [{
+    team: "player",
+    card: { ...playerCard, currentHP: playerCard.hp },
+    element: playerEl,
+    target: null
+  }];
+
+  // 👥 przeciwnicy
+  enemyUnits = [];
+
+  for (let i = 0; i < enemyCount; i++) {
+    const c = humanCards[Math.floor(Math.random() * humanCards.length)];
+    const el = createBattleCard(c);
+    eSide.appendChild(el);
+
+    enemyUnits.push({
+      team: "enemy",
+      card: { ...c, currentHP: c.hp },
+      element: el
+    });
+  }
+
+  // 🎯 lepszy target (najslabszy)
+  playerUnits[0].target = enemyUnits.reduce((a, b) =>
+    a.card.currentHP < b.card.currentHP ? a : b
+  );
+
+  // ⚔️ start walki
+  battleRunning = true;
+
+  playerUnits.forEach(u => autoAttack(u, enemyUnits));
+  enemyUnits.forEach(u => autoAttack(u, playerUnits));
+}
+
+function playBossSound(name) {
+  const bossSounds = {
+    "Sonic Exe Sticker": "SonicExeSticker.mp3",
+    "Nightmare Marionette": "NightmareMarionette.mp3",
+    "Jeff The Killer": "JeffTheKiller.mp3"
+  };
+
+  const file = bossSounds[name];
+
+  console.log("🎵 Próba odtworzenia:", file);
+
+  if (!file) {
+    console.log("❌ Brak pliku dla:", name);
+    return;
+  }
+
   const audio = document.getElementById("bossSound");
+  audio.src = file;
 
-  let file = "";
-
-  if (bossName === "Sonic Exe Sticker") {
-    file = "SonicExeStricker.mp3";
-  } 
-  else if (bossName === "Nightmare Marionette") {
-    file = "NightmareMarionette.mp3";
-  } 
-  else if (bossName === "Jeff The Killer") {
-    file = "JeffTheKiller.mp3";
-  }
-
-  if (file) {
-    audio.src = file;
-    audio.volume = 0.7;
-    audio.play();
-  }
+  audio.play().catch(err => {
+    console.log("❌ Audio error:", err);
+  });
 }
 
 function enterBossBattle() {
@@ -988,28 +1090,52 @@ function usePotion(type) {
   saveGame();
 }
 
+let challengeLocked = false;
+let challengeUnlockTime = 0;
+let currentChallenge = null;
+
+// 🎯 aktualne wyzwanie
 function getCurrentChallenge() {
   const hour = new Date().getHours();
   return challenges[hour % challenges.length];
 }
 
+// 📜 wejście do ekranu
 function enterChallenges() {
   switchScreen("lobbyScreen", "challengeScreen");
   renderChallenge();
 }
 
+// 🖥️ render UI
 function renderChallenge() {
   const div = document.getElementById("challengeList");
   const timer = document.getElementById("challengeTimer");
 
   currentChallenge = getCurrentChallenge();
 
-  // timer do następnej godziny
   const now = new Date();
-  const minutes = 59 - now.getMinutes();
-  const seconds = 59 - now.getSeconds();
+
+  // ⏱️ czas do następnej godziny
+  const nextHour = new Date();
+  nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+
+  const diff = nextHour - now;
+  const minutes = Math.floor(diff / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
 
   timer.textContent = `Nowe wyzwanie za: ${minutes}m ${seconds}s`;
+
+  // 🔒 sprawdzenie cooldownu
+  let lockedText = "";
+  if (challengeLocked) {
+    const remaining = Math.max(0, Math.ceil((challengeUnlockTime - Date.now()) / 1000));
+
+    if (remaining > 0) {
+      lockedText = `<b style='color:red;'>⏳ Zablokowane: ${remaining}s</b>`;
+    } else {
+      challengeLocked = false;
+    }
+  }
 
   div.innerHTML = `
     <div class="card">
@@ -1024,21 +1150,27 @@ function renderChallenge() {
 
       ${
         challengeLocked
-          ? "<b style='color:red;'>❌ Zablokowane do następnej godziny</b>"
+          ? lockedText
           : "<button class='button' onclick='startChallenge()'>Start wyzwania</button>"
       }
     </div>
   `;
 }
 
+// ⚔️ start walki
 function startChallenge() {
-  battleMode = "challenge";
   if (challengeLocked) return;
 
-  if (player.team.length === 0) return alert("Wybierz drużynę!");
+  battleMode = "challenge";
+
+  if (player.team.length === 0) {
+    alert("Wybierz drużynę!");
+    return;
+  }
 
   if (player.team.length > currentChallenge.maxTeam) {
-    return alert(`Możesz użyć max ${currentChallenge.maxTeam} postaci!`);
+    alert(`Możesz użyć max ${currentChallenge.maxTeam} postaci!`);
+    return;
   }
 
   switchScreen("challengeScreen", "battleScreen");
@@ -1049,21 +1181,35 @@ function startChallenge() {
   pSide.innerHTML = "";
   eSide.innerHTML = "";
 
-  // gracz
+  // 🧍 gracz
   playerUnits = player.team.map(name => {
     const card = allCards.find(c => c.name === name);
+    if (!card) return null;
+
     const el = createBattleCard(card);
     pSide.appendChild(el);
-    return { team: "player", card: { ...card, currentHP: card.hp }, element: el };
-  });
 
-  // przeciwnicy z challenge
+    return {
+      team: "player",
+      card: { ...card, currentHP: card.hp },
+      element: el
+    };
+  }).filter(Boolean);
+
+  // 👹 przeciwnicy
   enemyUnits = currentChallenge.enemies.map(name => {
     const card = allCards.find(c => c.name === name);
+    if (!card) return null;
+
     const el = createBattleCard(card);
     eSide.appendChild(el);
-    return { team: "enemy", card: { ...card, currentHP: card.hp }, element: el };
-  });
+
+    return {
+      team: "enemy",
+      card: { ...card, currentHP: card.hp },
+      element: el
+    };
+  }).filter(Boolean);
 
   battleRunning = true;
   isChallengeBattle = true;
@@ -1302,7 +1448,12 @@ function addToTeam(name) {
   let c = player.cards.find(x => x.name === name);
   if (!c) return;
 
-  // sprawdzenie ile razy dana karta już jest w drużynie
+  // 🔥 poprawka tutaj
+  if (c.type === "human") {
+    alert("Tej postaci nie można używać w drużynie!");
+    return;
+  }
+
   const inTeamCount = player.team.filter(x => x === name).length;
   if (inTeamCount >= c.count) {
     return alert(`Nie masz więcej sztuk ${c.name} do dodania!`);
@@ -1348,6 +1499,7 @@ function buyStarterPack() {
     const rarity = getStarterRarity();
     const pool = allCards.filter(c => c.rarity === rarity);
     const card = pool[Math.floor(Math.random() * pool.length)];
+    const shopCards = allCards.filter(c => c.type !== "human");
 
     let existing = player.cards.find(c => c.name === card.name);
     if (existing) existing.count++;
@@ -1429,7 +1581,8 @@ function enterBattle() {
   // Tworzymy jednostki przeciwnika
   enemyUnits = [];
   for (let i = 0; i < player.team.length; i++) {
-    const c = allCards[Math.floor(Math.random() * allCards.length)];
+    const availableCards = allCards.filter(c => c.type !== "human");
+    const c = availableCards[Math.floor(Math.random() * availableCards.length)];
     const el = createBattleCard(c);
     eSide.appendChild(el);
     enemyUnits.push({ team: "enemy", card: { ...c, currentHP: c.hp }, element: el });
@@ -1470,6 +1623,8 @@ stopBtn.onclick = () => {
   renderBattlePotions();
 }
 
+let autoBattleMode = false;
+
 function startAutoBattle() {
   if (!autoBattleMode) return;
 
@@ -1493,6 +1648,7 @@ function startAutoBattle() {
   enemyUnits = [];
   for (let i = 0; i < player.team.length; i++) {
     const c = allCards[Math.floor(Math.random() * allCards.length)];
+    console.log(c.name);
     const el = createBattleCard(c);
     eSide.appendChild(el);
     enemyUnits.push({ team: "enemy", card: { ...c, currentHP: c.hp }, element: el });
@@ -1585,67 +1741,89 @@ function endBattle(message) {
   battleRunning = false;
   isChallengeBattle = false;
 
-  document.getElementById("battleLog").textContent = message;
+  const log = document.getElementById("battleLog");
 
+  // 📜 komunikat
   if (battleMode === "challenge") {
-    document.getElementById("battleLog").textContent = "🔥 TRYB WYZWANIA\n" + message;
+    log.textContent = "🔥 TRYB WYZWANIA\n" + message;
+  } else if (!autoBattleMode) {
+    log.textContent = message;
+  } else {
+    log.textContent = "⚡ AUTO...";
   }
 
-  // ❌ blokada tylko dla challenge
+  // ❌ blokada challenge po przegranej
   if (battleMode === "challenge" && message.includes("Przegrałeś")) {
     challengeLocked = true;
   }
-  
+
+  // 👑 BOSS DROP
   if (isBossBattle && message.includes("Wygrałeś") && currentBoss) {
     playBossSound(currentBoss.name);
+
     const chance = Math.random() * 100;
 
-  if (chance < 1) {
-    let existing = player.cards.find(c => c.name === currentBoss.name);
-    if (existing) {
-      existing.count++;
+    if (chance < 1) {
+      let existing = player.cards.find(c => c.name === currentBoss.name);
+
+      if (existing) {
+        existing.count++;
+      } else {
+        player.cards.push({ ...currentBoss, count: 1, addedAt: Date.now() });
+      }
+
+      if (!autoBattleMode) {
+        alert(`🔥 NIESAMOWITE! Zdobyłeś kartę BOSSA: ${currentBoss.name}!`);
+      }
     } else {
-      player.cards.push({ ...currentBoss, count: 1, addedAt: Date.now() });
+      if (!autoBattleMode) {
+        alert("Pokonałeś bossa, ale nic nie wypadło...");
+      }
     }
-
-    if (!autoBattleMode) {
-      alert(`🔥 NIESAMOWITE! Zdobyłeś kartę BOSSA: ${currentBoss.name}!`);
-    }
-  } else {
-    alert("Pokonałeś bossa, ale nic nie wypadło...");
   }
-}
 
-  // 🏆 nagrody TYLKO dla challenge
+  // 🏆 nagrody CHALLENGE
   if (battleMode === "challenge" && message.includes("Wygrałeś") && currentChallenge) {
 
-    // ✅ quest tylko dla challenge
+    // quest
     if (player.team.length === 1) {
       updateQuestProgress("challengeSoloWin");
     }
 
     if (currentChallenge.reward.type === "coins") {
       player.coins = Number(player.coins) + currentChallenge.reward.amount;
-      alert(`💰 Otrzymano ${currentChallenge.reward.amount} Coins!`);
-    } else {
-      const card = allCards.find(c => c.name === currentChallenge.reward.card);
-      if (card) {
-        let existing = player.cards.find(c => c.name === card.name);
-        if (existing) existing.count++;
-        else player.cards.push({ ...card, count: 1 });
 
-        alert(`🎴 Otrzymano: ${card.name}`);
+      if (!autoBattleMode) {
+        alert(`💰 Otrzymano ${currentChallenge.reward.amount} Coins!`);
+      }
+
+    } else {
+      const rewardCard = allCards.find(c => c.name === currentChallenge.reward.card);
+
+      if (rewardCard) {
+        let existing = player.cards.find(c => c.name === rewardCard.name);
+
+        if (existing) existing.count++;
+        else player.cards.push({ ...rewardCard, count: 1 });
+
+        if (!autoBattleMode) {
+          alert(`🎴 Otrzymano: ${rewardCard.name}`);
+        }
       }
     }
   }
 
-  // reset boss flagi
+  // 👹 tryb Potwór VS Człowiek
+  if (battleMode === "monsterVsHuman" && message.includes("Wygrałeś")) {
+    player.coins += 50;
+  }
+
   isBossBattle = false;
 
   saveGame();
 
+  // 🔁 AUTO LOOP
   setTimeout(() => {
-
     if (autoBattleMode) {
       startAutoBattle();
     } else {
@@ -1716,7 +1894,6 @@ function createBattleCard(card) {
   const div = document.createElement("div");
   div.className = "card";
 
-  // 🔥 poprawka
   div.setAttribute("data-rarity", card.rarity);
 
   div.innerHTML = `
@@ -1724,7 +1901,7 @@ function createBattleCard(card) {
     <strong>${card.name}</strong><br>
     <div class="hp-bar-bg"><div class="hp-bar"></div></div>
   `;
-
+  
   return div;
 }
 
