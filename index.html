@@ -399,6 +399,7 @@ const allCards = [
   { name: "Arctic Fox", hp: 18, damage: 4, speed: 1.0, super: null, img: "Arctic Fox.png", rarity: "Rare" },
   { name: "Baby Zombie", hp: 20, damage: 3, speed: 0.5, super: null, img: "Baby Zombie.gif", rarity: "Rare" },
   { name: "Balloon Boy", hp: 20, damage: 8, speed: 1.65, super: "Splash", img: "Balloon Boy.png", rarity: "Rare" },
+  { name: "Bat Man", hp: 30, damage: 7, speed: 0.9, super: null, img: "Bat Man.png", rarity: "Rare" },
   { name: "Blaze", hp: 20, damage: 8, speed: 1.0, super: "Splash", img: "Blaze.gif", rarity: "Rare" },
   { name: "Bonnie", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Bonnie.png", rarity: "Rare" },
   { name: "Chica", hp: 30, damage: 9, speed: 2.0, super: "Splash", img: "Chica.png", rarity: "Rare" },
@@ -410,11 +411,13 @@ const allCards = [
   { name: "Tv Man", hp: 20, damage: 5, speed: 0.8, super: "AOE", img: "Tv Man.png", rarity: "Rare" },
   { name: "Vaggie", hp: 22, damage: 8, speed: 1.5, super: null, img: "Vaggie.png", rarity: "Rare" },
   { name: "Wither Skeleton", hp: 21, damage: 5, speed: 0.75, super: null, img: "Wither Skeleton.png", rarity: "Rare" },
+  { name: "Wonder Woman", hp: 25, damage: 6, speed: 0.9, super: null, img: "Wonder Woman.png", rarity: "Rare" },
   
   
   
   { name: "Afton", hp: 20, damage: 9, speed: 0.7, super: null, img: "Afton.png", rarity: "Epic" },
-  { name: "Arin", hp: 10, damage: 20, speed: 2.0, super: "Splash", img: "Arin.png", rarity: "Epic" },
+  { name: "Arin", hp: 10, damage: 20, speed: 1.0, super: "Splash", img: "Arin.png", rarity: "Epic" },
+  { name: "Creeper", hp: 20, damage: 40, speed: 1.5, super: "Splash", img: "Creeper.png", rarity: "Epic" },
   { name: "Demogorgon", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Demogorgon.png", rarity: "Epic" },
   { name: "Doey", hp: 42, damage: 8, speed: 1.5, super: "Splash", img: "Doey.png", rarity: "Epic" },
   { name: "Drawing Dog Day", hp: 15, damage: 8, speed: 0.46, super: null, img: "Drawing Dog Day.png", rarity: "Epic" },
@@ -425,6 +428,7 @@ const allCards = [
   { name: "Leon", hp: 18, damage: 6, speed: 1.2, super: null, img: "Leon.png", rarity: "Epic" },
   { name: "Nightmare Chica", hp: 45, damage: 18, speed: 3.0, super: "Splash", img: "Nightmare Chica.png", rarity: "Epic" },
   { name: "Sonic", hp: 14, damage: 7, speed: 0.3, super: null, img: "Sonic.png", rarity: "Epic" },
+  { name: "Springtrap", hp: 40, damage: 7, speed: 1.0, super: null, img: "Springtrap.png", rarity: "Epic" },
   { name: "Superman", hp: 20, damage: 12, speed: 0.91, super: null, img: "Superman.png", rarity: "Epic" },
   { name: "The Knocer", hp: 20, damage: 12, speed: 0.85, super: null, img: "The Knocer.png", rarity: "Epic" },
   { name: "Titan Luz", hp: 20, damage: 8, speed: 0.7, super: null, img: "Titan Luz.png", rarity: "Epic" },
@@ -433,9 +437,11 @@ const allCards = [
 
   { name: "Alastor", hp: 60, damage: 12, speed: 1.0, super: null, img: "Alastor.png", rarity: "Legendary" },
   { name: "Anomaly", hp: 50, damage: 2, speed: 0.3, super: "AOE", img: "Anomaly.png", rarity: "Legendary" },
+  { name: "Aquaman", hp: 50, damage: 8, speed: 0.7, super: null, img: "Aquaman.png", rarity: "Legendary" },
   { name: "Blastling Enderman", hp: 40, damage: 12, speed: 0.75, super: null, img: "Blastling.png", rarity: "Legendary" },
   { name: "Colton Anomaly", hp: 50, damage: 14, speed: 1.0, super: null, img: "Colton Anomaly.png", rarity: "Legendary" },
   { name: "Cube Seek", hp: 40, damage: 9, speed: 0.5, super: null, img: "Cube Seek.gif", rarity: "Legendary" },
+  { name: "Cyborg", hp: 68, damage: 9, speed: 0.4, super: null, img: "Cyborg.png", rarity: "Legendary" },
   { name: "Darth Vader", hp: 25, damage: 10, speed: 0.85, super: null, img: "Darth Vader.png", rarity: "Legendary" },
   { name: "Figure", hp: 70, damage: 12, speed: 0.75, super: "Splash", img: "Figure.gif", rarity: "Legendary" },
   { name: "Guardian", hp: 30, damage: 0.5, speed: 0.05, super: null, img: "Guardian.gif", rarity: "Legends" },
@@ -451,6 +457,9 @@ const allCards = [
   { name: "Cat Nap", hp: 45, damage: 10, speed: 1.0, super: null, img: "Cat Nap.png", rarity: "Mythic" },
   { name: "DJ Vox", hp: 67, damage: 8, speed: 0.6, super: "AOE", img: "DJ Vox.png", rarity: "Mythic" },
   { name: "Elder Guardian", hp: 45, damage: 0.75, speed: 0.05, super: null, img: "Elder Guardian.png", rarity: "Mythic" },
+  { name: "Flash", hp: 22, damage: 6, speed: 0.2, super: null, img: "Flash.png", rarity: "Mythic" },
+  { name: "Green Lanter", hp: 30, damage: 12, speed: 0.6, super: "AOE", img: "Green Lanter.png", rarity: "Mythic" },
+  { name: "Nightmare Huggy Wuggy", hp: 45, damage: 9, speed: 0.3, super: null, img: "Nightmare Huggy Wuggy.png", rarity: "Mythic" },
   { name: "R2 D2", hp: 46, damage: 1, speed: 0.12, super: "AOE", img: "R2 D2.png", rarity: "Mythic" },
   { name: "The Man From The Shadow", hp: 40, damage: 20, speed: 1.0, super: null, img: "The Man From The Shadow.png", rarity: "Mythic" },
   { name: "Warden", hp: 50, damage: 18, speed: 1.1, super: "Splash", img: "Warden.png", rarity: "Mythic" },
@@ -459,20 +468,22 @@ const allCards = [
   
   
   { name: "Ancient Guardian", hp: 60, damage: 1, speed: 0.05, super: null, img: "Ancient Guardian.png", rarity: "Eternal" },
+  { name: "Burntrap", hp: 60, damage: 18, speed: 0.5, super: "Splash", img: "Burntrap.png", rarity: "Eternal" },
   { name: "H4CK3R", hp: 10, damage: 3, speed: 0.1, super: "AOE", img: "H4CK3R.png", rarity: "Eternal" },
+  { name: "Mimic", hp: 30, damage: 18, speed: 0.6, super: null, img: "Mimic.png", rarity: "Eternal" },
   { name: "Lily", hp: 65, damage: 12, speed: 0.3, super: null, img: "Lily.png", rarity: "Eternal" },
-  { name: "Thanos", hp: 46, damage: 26, speed: 1.3, super: "Splash", img: "Thanos.png", rarity: "Eternal" },
+  { name: "Thanos", hp: 46, damage: 26, speed: 0.8, super: "Splash", img: "Thanos.png", rarity: "Eternal" },
   { name: "The Deer", hp: 50, damage: 10, speed: 0.6, super: null, img: "The Deer.png", rarity: "Eternal" },
   { name: "Shadow Bonnie", hp: 36, damage: 5, speed: 0.1, super: "AOE", img: "Shadow Bonnie.png", rarity: "Eternal" },
 
 
 
   { name: "Bekin", hp: 21, damage: 2, speed: 1.2, super: "AOE", img: "Bekin.png", rarity: "Exclusive" },
-  { name: "Permaton", hp: 40, damage: 21, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" },
-  { name: "Shadow Jeff The Killer", hp: 111, damage: 17, speed: 0.36, super: "AOE", img: "Shadow Jeff The Killer.png", rarity: "Exclusive" },
-  { name: "Zombox", hp: 80, damage: 10, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
-  { name: "Zombspri", hp: 40, damage: 12, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" },
-  { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
+  { name: "Permaton", hp: 40, damage: 3, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" },
+  { name: "Shadow Jeff", hp: 111, damage: 7, speed: 0.36, super: "AOE", img: "Shadow Jeff.png", rarity: "Exclusive" },
+  { name: "Zombox", hp: 80, damage: 4, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
+  { name: "Zombspri", hp: 40, damage: 6, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" },
+  { name: "Zomchi", hp: 40, damage: 6, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
  
  
   { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.37, super: "Splash", img: "Jeff The Killer.png", rarity: "Boss" },
@@ -485,7 +496,7 @@ const fusions = [
     id: 1,
     base1: "Vox",
     base2: "Zombie",
-    result: { name: "Zombox", hp: 80, damage: 10, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
+    result: { name: "Zombox", hp: 80, damage: 4, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" }
   },
   {
     id: 2,
@@ -497,25 +508,25 @@ const fusions = [
     id: 3,
     base1: "Baby Zombie",
     base2: "Afton",
-    result: { name: "Zombspri", hp: 40, damage: 12, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" }
+    result: { name: "Zombspri", hp: 40, damage: 6, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" }
   },
   {
     id: 4,
     base1: "Afton",
     base2: "Superman",
-    result: { name: "Permaton", hp: 50, damage: 12, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" }
+    result: { name: "Permaton", hp: 40, damage: 3, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" },
   },
   {
     id: 5,
     base1: "Baby Zombie",
     base2: "Chica",
-    result: { name: "Zomchi", hp: 40, damage: 21, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" }
+    result: { name: "Zomchi", hp: 40, damage: 6, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" }
   },
   {
     id: 6,
     base1: "Shadow Bonnie",
     base2: "Jeff The Killer",
-    result: { name: "Shadow Jeff The Killer", hp: 111, damage: 17, speed: 0.36, super: null, img: "Shadow Jeff The Killer.png", rarity: "Exclusive" }
+    result: { name: "Shadow Jeff", hp: 111, damage: 7, speed: 0.36, super: "AOE", img: "Shadow Jeff.png", rarity: "Exclusive" }
   }
 ];
 
