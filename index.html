@@ -31,19 +31,21 @@ p, h1, h2, h3, h4, h5, h6, span, small, button {
   color: white;
 }
 
-* {
-  color: white !important;
-}
-
 @media (max-width: 600px) {
+
   .card {
-    width: 100px;
+    width: 110px;
     font-size: 12px;
   }
 
+  .battleArea {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
   .button {
-    padding: 8px 12px;
-    font-size: 12px;
+    width: 90%;
   }
 }
 
@@ -79,15 +81,11 @@ input {
   background: #222;
 }
 
-.someClass {
-  color: white !important;
-}
-
-/* Ekrany */
 .screen { display: none; }
 .active { display: block; }
 
 .card {
+  position: relative;
   width: 140px;
   padding: 12px;
   margin: 10px;
@@ -96,48 +94,71 @@ input {
   display: inline-block;
   border: 2px solid #666;
   box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.25s ease;
+  overflow: hidden;
 }
 
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.9);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.8),
+    0 0 15px rgba(255,255,255,0.15);
 }
 
 .card img {
   width: 100%;
 }
+
 .card[data-rarity="Basic"] {
-  border: 2px solid black;
+  border-color: #888;
 }
 
 .card[data-rarity="Rare"] {
-  border: 2px solid #00cc44;
+  border-color: #00ff66;
+  box-shadow: 0 0 10px rgba(0,255,102,0.3);
 }
 
 .card[data-rarity="Epic"] {
-  border: 2px solid #9933ff;
+  border-color: #aa33ff;
+  box-shadow: 0 0 12px rgba(170,51,255,0.4);
 }
 
 .card[data-rarity="Legendary"] {
-  border: 2px solid yellow;
+  border-color: gold;
+  box-shadow: 0 0 15px rgba(255,215,0,0.5);
 }
 
 .card[data-rarity="Mythic"] {
-  border: 2px solid red;
+  border-color: #ff3333;
+  box-shadow: 0 0 15px rgba(255,0,0,0.5);
 }
 
 .card[data-rarity="Eternal"] {
-  border: 2px solid #3399ff;
+  border-color: #33aaff;
+  box-shadow: 0 0 15px rgba(51,170,255,0.5);
 }
 
 .card[data-rarity="Exclusive"] {
-  border: 2px solid orange;
+  border-color: orange;
+  box-shadow: 0 0 15px rgba(255,165,0,0.5);
 }
 
 .card[data-rarity="Boss"] {
-  border: 2px solid #000080;
-  animation: bossGlow 1s infinite alternate;
+  border: 3px solid #6a00ff;
+  animation: bossGlow 1.2s infinite alternate;
+}
+
+@keyframes bossGlow {
+  from {
+    box-shadow:
+      0 0 10px purple,
+      0 0 20px purple;
+  }
+  to {
+    box-shadow:
+      0 0 25px violet,
+      0 0 40px violet;
+  }
 }
 
 .card[data-rarity="Boss"]::after {
@@ -152,21 +173,26 @@ input {
   from { box-shadow: 0 0 5px purple; }
   to { box-shadow: 0 0 20px violet; }
 }
+
 .hp-bar-bg {
   width: 100%;
-  height: 12px;
-  background: #444;
-  border-radius: 6px;
-  margin-top: 5px;
+  height: 14px;
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #555;
 }
 
 .hp-bar {
-  height: 12px;
-  background: linear-gradient(to right, red, orange);
-  width: 100%;
-  border-radius: 6px;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    #ff0000,
+    #ff8800,
+    #ffff00
+  );
   transition: width 0.3s ease;
-}
+}nsition: width 0.3s ease;
 
 #indexList {
   display: flex;
@@ -189,22 +215,51 @@ input {
 }
 
 .button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   margin: 10px;
   cursor: pointer;
-  background: #333;
-  border: 2px solid white;
-  border-radius: 8px;
+  background: linear-gradient(145deg, #3a3a3a, #222);
+  border: 2px solid #777;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
+
+.button:hover {
+  background: linear-gradient(145deg, #4a4a4a, #333);
+  border-color: #00aaff;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px rgba(0,170,255,0.6);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
 </style>
 </head>
 <body>
 
-<!-- ✅ EKRAN TWORZENIA POSTACI -->
 <div id="createScreen" class="screen active">
-  <h2>Wpisz nazwę użytkownika</h2>
-  <input type="text" id="playerName" placeholder="Nazwa">
-  <button class="button" onclick="clickSound(); createPlayer()">Start</button>
+  <div class="start-panel">
+
+    <h1 class="game-title">🎴 KARCIANA RPG 🎴</h1>
+    <p class="subtitle">Stwórz swojego bohatera i rozpocznij przygodę</p>
+
+    <input
+      type="text"
+      id="playerName"
+      placeholder="Wpisz nazwę użytkownika"
+      maxlength="20"
+    >
+
+    <button class="start-btn" onclick="clickSound(); createPlayer()">
+      ⚔ Rozpocznij Grę
+    </button>
+
+  </div>
 </div>
 
 <!-- ✅ LOBBY -->
@@ -404,6 +459,7 @@ const allCards = [
   { name: "Bonnie", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Bonnie.png", rarity: "Rare" },
   { name: "Chica", hp: 30, damage: 9, speed: 2.0, super: "Splash", img: "Chica.png", rarity: "Rare" },
   { name: "Helpy", hp: 28, damage: 4, speed: 1.0, super: "AOE", img: "Helpy.gif", rarity: "Rare" },
+  { name: "Jax", hp: 12, damage: 8, speed: 0.8, super: "Splash", img: "Jax.png", rarity: "Rare" },
   { name: "Piglin Brutal", hp: 20, damage: 9, speed: 0.9, super: null, img: "Piglin Brutal.png", rarity: "Rare" },
   { name: "Slime", hp: 16, damage: 4, speed: 0.8, super: null, img: "Slime.png", rarity: "Rare" },
   { name: "Spider Jockey", hp: 36, damage: 9, speed: 1.1, super: null, img: "Spider Jockey.png", rarity: "Rare" },
@@ -417,6 +473,7 @@ const allCards = [
   
   { name: "Afton", hp: 20, damage: 9, speed: 0.7, super: null, img: "Afton.png", rarity: "Epic" },
   { name: "Arin", hp: 10, damage: 20, speed: 1.0, super: "Splash", img: "Arin.png", rarity: "Epic" },
+  { name: "Caine", hp: 18, damage: 6, speed: 0.7, super: null, img: "Caine.png", rarity: "Epic" },
   { name: "Creeper", hp: 20, damage: 40, speed: 1.5, super: "Splash", img: "Creeper.png", rarity: "Epic" },
   { name: "Demogorgon", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Demogorgon.png", rarity: "Epic" },
   { name: "Doey", hp: 42, damage: 8, speed: 1.5, super: "Splash", img: "Doey.png", rarity: "Epic" },
@@ -439,13 +496,15 @@ const allCards = [
   { name: "Anomaly", hp: 50, damage: 2, speed: 0.3, super: "AOE", img: "Anomaly.png", rarity: "Legendary" },
   { name: "Aquaman", hp: 50, damage: 8, speed: 0.7, super: null, img: "Aquaman.png", rarity: "Legendary" },
   { name: "Blastling Enderman", hp: 40, damage: 12, speed: 0.75, super: null, img: "Blastling.png", rarity: "Legendary" },
+  { name: "Carton Bunny", hp: 30, damage: 6, speed: 0.9, super: null, img: "Carton Bunny.png", rarity: "Legendary" },
   { name: "Colton Anomaly", hp: 50, damage: 14, speed: 1.0, super: null, img: "Colton Anomaly.png", rarity: "Legendary" },
   { name: "Cube Seek", hp: 40, damage: 9, speed: 0.5, super: null, img: "Cube Seek.gif", rarity: "Legendary" },
   { name: "Cyborg", hp: 68, damage: 9, speed: 0.4, super: null, img: "Cyborg.png", rarity: "Legendary" },
   { name: "Darth Vader", hp: 25, damage: 10, speed: 0.85, super: null, img: "Darth Vader.png", rarity: "Legendary" },
   { name: "Figure", hp: 70, damage: 12, speed: 0.75, super: "Splash", img: "Figure.gif", rarity: "Legendary" },
-  { name: "Guardian", hp: 30, damage: 0.5, speed: 0.05, super: null, img: "Guardian.gif", rarity: "Legends" },
+  { name: "Guardian", hp: 30, damage: 0.5, speed: 0.05, super: null, img: "Guardian.gif", rarity: "Legendary" },
   { name: "Huggy Wuggy", hp: 50, damage: 11, speed: 0.8, super: null, img: "Huggy Wuggy.png", rarity: "Legendary" },
+  { name: "Jackie", hp: 45, damage: 18, speed: 1.2, super: "Splash", img: "Jackie.png", rarity: "Legendary" },
   { name: "Kissy Missy", hp: 50, damage: 9, speed: 1.0, super: null, img: "Kissy Missy.png", rarity: "Legendary" },
   { name: "Large Astro TV Man", hp: 32, damage: 8, speed: 0.6, super: "AOE", img: "Large Astro TV Man.png", rarity: "Legendary" },
   { name: "Mimicer", hp: 50, damage: 14, speed: 1.0, super: null, img: "Mimicer.png", rarity: "Legendary" },
@@ -462,6 +521,7 @@ const allCards = [
   { name: "Nightmare Huggy Wuggy", hp: 45, damage: 9, speed: 0.3, super: null, img: "Nightmare Huggy Wuggy.png", rarity: "Mythic" },
   { name: "R2 D2", hp: 46, damage: 1, speed: 0.12, super: "AOE", img: "R2 D2.png", rarity: "Mythic" },
   { name: "The Man From The Shadow", hp: 40, damage: 20, speed: 1.0, super: null, img: "The Man From The Shadow.png", rarity: "Mythic" },
+  { name: "Walfas", hp: 60, damage: 7, speed: 0.4, super: null, img: "Warden.png", rarity: "Mythic" },
   { name: "Warden", hp: 50, damage: 18, speed: 1.1, super: "Splash", img: "Warden.png", rarity: "Mythic" },
   { name: "Zestial", hp: 60, damage: 15, speed: 1.0, super: null, img: "Zestial.png", rarity: "Mythic" },
   
@@ -478,17 +538,19 @@ const allCards = [
 
 
 
-  { name: "Bekin", hp: 21, damage: 2, speed: 1.2, super: "AOE", img: "Bekin.png", rarity: "Exclusive" },
-  { name: "Permaton", hp: 40, damage: 3, speed: 0.21, super: null, img: "Permaton.png", rarity: "Exclusive" },
-  { name: "Shadow Jeff", hp: 111, damage: 7, speed: 0.36, super: "AOE", img: "Shadow Jeff.png", rarity: "Exclusive" },
-  { name: "Zombox", hp: 80, damage: 4, speed: 0.2, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
-  { name: "Zombspri", hp: 40, damage: 6, speed: 0.2, super: null, img: "Zombspri.png", rarity: "Exclusive" },
-  { name: "Zomchi", hp: 40, damage: 6, speed: 1.5, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
+  { name: "Bekin", hp: 14, damage: 4, speed: 0.9, super: null, img: "Bekin.png", rarity: "Exclusive" },
+  { name: "Permaton", hp: 40, damage: 18, speed: 1.8, super: null, img: "Permaton.png", rarity: "Exclusive" },
+  { name: "Shadow Jeff", hp: 90, damage: 1, speed: 0.15, super: null, img: "Shadow Jeff.png", rarity: "Exclusive" },
+  { name: "Zombox", hp: 40, damage: 6, speed: 0.42, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
+  { name: "Zombspri", hp: 24, damage: 7, speed: 0.82, super: null, img: "Zombspri.png", rarity: "Exclusive" },
+  { name: "Zomchi", hp: 30, damage: 12, speed: 0.9, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
  
  
-  { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.37, super: "Splash", img: "Jeff The Killer.png", rarity: "Boss" },
+  { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.2, super: null, img: "Jeff The Killer.png", rarity: "Boss" },
+  { name: "Natro Killer", hp: 65, damage: 15, speed: 0.35, super: null, img: "Natro Killer.png", rarity: "Boss" },
   { name: "Nightmare Marionette", hp: 65, damage: 6, speed: 0.32, super: "AOE", img: "Nightmare Marionette.png", rarity: "Boss" },
-  { name: "Sonic Exe Sticker", hp: 70, damage: 3, speed: 0.1, super: null, img: "Sonic Exe Sticker.png", rarity: "Boss" }
+  { name: "Sonic Exe Sticker", hp: 70, damage: 3, speed: 0.1, super: null, img: "Sonic Exe Sticker.png", rarity: "Boss" },
+  { name: "Ticci Toby", hp: 75, damage: 14, speed: 0.24, super: null, img: "Ticci Toby.png", rarity: "Boss" }
 ];
 
 const fusions = [
@@ -757,7 +819,9 @@ function playBossSound(name) {
   const bossSounds = {
     "Sonic Exe Sticker": "SonicExeSticker.mp3",
     "Nightmare Marionette": "NightmareMarionette.mp3",
-    "Jeff The Killer": "JeffTheKiller.mp3"
+    "Jeff The Killer": "JeffTheKiller.mp3",
+    "Natro Killer": "NatroKiller.mp3"
+	"Ticci Toby": "TicciToby.mp3"
   };
 
   const file = bossSounds[name];
@@ -798,7 +862,7 @@ function enterBossBattle() {
     return { team: "player", card: { ...card, currentHP: card.hp }, element: el };
   });
 
-const bosses = ["Sonic Exe Sticker", "Nightmare Marionette", "Jeff The Killer"];
+const bosses = ["Sonic Exe Sticker", "Nightmare Marionette", "Jeff The Killer, Natro Killer, Ticci Toby"];
 const randomBoss = bosses[Math.floor(Math.random() * bosses.length)];
 const boss = allCards.find(c => c.name === randomBoss);
 
