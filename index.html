@@ -329,8 +329,20 @@ input {
   
   <div id="musicControls">
     <button class="button" onclick="clickSound(); toggleMusic()">🎵 Play / Pause</button>
-    <input type="range" min="0" max="1" step="0.01" value="0.5" onchange="changeMusicVolume(this.value)">
-  </div>
+
+    <button class="button" onclick="clickSound(); skipSong()">
+      ⏭️ Skip
+    </button>
+
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      value="0.5"
+      onchange="changeMusicVolume(this.value)"
+    >
+</div>
 
   <button class="button" onclick="clickSound(); backToLobby()">Powrót</button>
 </div>
@@ -395,7 +407,7 @@ input {
 
 <audio id="bossSound"></audio>
 <audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
+  <source src="music1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -459,6 +471,7 @@ const allCards = [
   { name: "Arctic Fox", hp: 18, damage: 4, speed: 1.0, super: null, img: "Arctic Fox.png", rarity: "Rare" },
   { name: "Baby Zombie", hp: 20, damage: 3, speed: 0.5, super: null, img: "Baby Zombie.gif", rarity: "Rare" },
   { name: "Balloon Boy", hp: 20, damage: 8, speed: 1.65, super: "Splash", img: "Balloon Boy.png", rarity: "Rare" },
+  { name: "Bat", hp: 6, damage: 1, speed: 0.15, super: null, img: "Bat.gif", rarity: "Rare" },
   { name: "Bat Man", hp: 30, damage: 7, speed: 0.9, super: null, img: "Bat Man.png", rarity: "Rare" },
   { name: "Blaze", hp: 20, damage: 8, speed: 1.0, super: "Splash", img: "Blaze.gif", rarity: "Rare" },
   { name: "Bonnie", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Bonnie.png", rarity: "Rare" },
@@ -482,7 +495,7 @@ const allCards = [
   
   
   { name: "Afton", hp: 20, damage: 9, speed: 0.7, super: null, img: "Afton.png", rarity: "Epic" },
-  { name: "Arin", hp: 10, damage: 20, speed: 1.0, super: "Splash", img: "Arin.png", rarity: "Epic" },
+  { name: "Arin", hp: 10, damage: 36, speed: 1.0, super: "Splash", img: "Arin.png", rarity: "Epic" },
   { name: "Caine", hp: 18, damage: 6, speed: 0.7, super: null, img: "Caine.png", rarity: "Epic" },
   { name: "Creeper", hp: 20, damage: 40, speed: 1.5, super: "Splash", img: "Creeper.png", rarity: "Epic" },
   { name: "Demogorgon", hp: 30, damage: 6, speed: 1.0, super: "AOE", img: "Demogorgon.png", rarity: "Epic" },
@@ -563,11 +576,11 @@ const allCards = [
   { name: "Zomchi", hp: 30, damage: 12, speed: 0.9, super: "Splash", img: "Zomchi.png", rarity: "Exclusive" },
  
  
-  { name: "Jeff The Killer", hp: 75, damage: 12, speed: 0.2, super: null, img: "Jeff The Killer.png", rarity: "Boss" },
-  { name: "Natro Killer", hp: 65, damage: 15, speed: 0.35, super: null, img: "Natro Killer.png", rarity: "Boss" },
-  { name: "Nightmare Marionette", hp: 65, damage: 6, speed: 0.32, super: "AOE", img: "Nightmare Marionette.png", rarity: "Boss" },
-  { name: "Sonic Exe Sticker", hp: 70, damage: 3, speed: 0.1, super: null, img: "Sonic Exe Sticker.png", rarity: "Boss" },
-  { name: "Ticci Toby", hp: 75, damage: 14, speed: 0.24, super: null, img: "Ticci Toby.png", rarity: "Boss" }
+  { name: "Jeff The Killer", hp: 76, damage: 8, speed: 0.14, super: null, img: "Jeff The Killer.png", rarity: "Boss" },
+  { name: "Natro Killer", hp: 76, damage: 15, speed: 0.35, super: null, img: "Natro Killer.png", rarity: "Boss" },
+  { name: "Nightmare Marionette", hp: 120, damage: 9, speed: 0.2, super: "AOE", img: "Nightmare Marionette.png", rarity: "Boss" },
+  { name: "Sonic Exe Sticker", hp: 84, damage: 5, speed: 0.05, super: null, img: "Sonic Exe Sticker.png", rarity: "Boss" },
+  { name: "Ticci Toby", hp: 76, damage: 13, speed: 0.36, super: null, img: "Ticci Toby.png", rarity: "Boss" }
 ];
 
 const fusions = [
@@ -727,10 +740,17 @@ if (save.challengeLocked && save.lastChallengeHour === currentHour) {
 
 const bgMusic = document.getElementById("bgMusic");
 
-// automatyczna głośność 50%
-bgMusic.volume = 0.5;
+const playlist = [
+  "music1.mp3",
+  "music2.mp3",
+  "music3.mp3",
+  "music4.mp3",
+  "music5.mp3",
+  "music6.mp3"
+];
 
-// Play / Pause
+let currentSong = 0;
+
 function toggleMusic() {
   if (bgMusic.paused) {
     bgMusic.play();
@@ -739,13 +759,25 @@ function toggleMusic() {
   }
 }
 
+function skipSong() {
+  currentSong++;
+
+  if (currentSong >= playlist.length) {
+    currentSong = 0;
+  }
+
+  bgMusic.src = playlist[currentSong];
+  bgMusic.play();
+
+  console.log("⏭️ Odtwarzam:", playlist[currentSong]);
+}
+
 function clickSound() {
   const audio = new Audio("click.mp3");
   audio.volume = 0.3;
   audio.play();
 }
 
-// zmiana głośności
 function changeMusicVolume(value) {
   bgMusic.volume = value;
   localStorage.setItem("musicVolume", value);
