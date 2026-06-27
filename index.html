@@ -238,9 +238,63 @@ input {
   transform: scale(0.95);
 }
 
+#caseOpening{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+#caseViewport{
+    width:900px;
+    height:230px;
+    overflow:hidden;
+    border:4px solid gold;
+    position:relative;
+    background:#222;
+}
+
+#caseViewport::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:0;
+    width:4px;
+    height:100%;
+    background:red;
+    transform:translateX(-2px);
+}
+
+#caseRoll{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:transform 5s cubic-bezier(.08,.8,.18,1);
+}
+
+.caseCard{
+    width:170px;
+    flex-shrink:0;
+    text-align:center;
+}
+
+.caseCard img{
+    width:170px;
+    border-radius:10px;
+}
+
 </style>
 </head>
 <body>
+
+<div id="caseOpening" style="display:none;">
+    <div id="caseViewport">
+        <div id="caseRoll"></div>
+    </div>
+</div>
 
 <div id="createScreen" class="screen active">
   <div class="start-panel">
@@ -575,6 +629,7 @@ const allCards = [
 
   { name: "Bad Blue Jax", hp: 40, damage: 12, speed: 0.7, super: "Splash", img: "Bad Blue Jax.png", rarity: "Exclusive" },
   { name: "Bekin", hp: 14, damage: 4, speed: 0.9, super: null, img: "Bekin.png", rarity: "Exclusive" },
+  { name: "Ender Steve", hp: 36, damage: 18, speed: 0.8, super: null, img: "Ender Steve.png", rarity: "Exclusive" },
   { name: "Permaton", hp: 40, damage: 18, speed: 1.8, super: null, img: "Permaton.png", rarity: "Exclusive" },
   { name: "Shadow Jeff", hp: 90, damage: 1, speed: 0.15, super: null, img: "Shadow Jeff.png", rarity: "Exclusive" },
   { name: "Zombox", hp: 40, damage: 6, speed: 0.42, super: "AOE", img: "Zombox.png", rarity: "Exclusive" },
@@ -583,7 +638,6 @@ const allCards = [
  
  
  
-  { name: "Ender Steve", hp: 36, damage: 18, speed: 0.8, super: null, img: "Ender Steve.png", rarity: "Exclusive" },
   { name: "Jeff The Killer", hp: 76, damage: 8, speed: 0.14, super: null, img: "Jeff The Killer.png", rarity: "Boss" },
   { name: "Natro Killer", hp: 76, damage: 15, speed: 0.35, super: null, img: "Natro Killer.png", rarity: "Boss" },
   { name: "Nightmare Marionette", hp: 120, damage: 9, speed: 0.2, super: "AOE", img: "Nightmare Marionette.png", rarity: "Boss" },
@@ -1405,7 +1459,7 @@ function getRandomCard() {
   if (existing) existing.count++;
   else player.cards.push({ ...card, count: 1 });
 
-  alert(`🎴 Wylosowano (${rarity}): ${card.name}`);
+  openCaseAnimation(card);
   renderInventory();
 }
 
@@ -1649,7 +1703,7 @@ function buyStarterPack() {
     if (existing) existing.count++;
     else player.cards.push({ ...card, count: 1 });
 
-    alert(`🎁 Otworzyłeś Starter Pack!\nWylosowano (${rarity}): ${card.name}`);
+    openCaseAnimation(card);
 
     updateQuestProgress("buyPack");
     updateQuestProgress("collectCard");
@@ -1687,7 +1741,7 @@ function buySuperPack() {
     if (existing) existing.count++;
     else player.cards.push({ ...card, count: 1 });
 
-    alert(`🎁 Otworzyłeś Super Pack!\nWylosowano (${rarity}): ${card.name}`);
+    openCaseAnimation(card);
 
     updateQuestProgress("openSuperPack");
 
@@ -1699,7 +1753,67 @@ function buySuperPack() {
     alert("Masz za mało Coins!");
   }
 }
-  
+
+function openCaseAnimation(finalCard){
+
+    const opening = document.getElementById("caseOpening");
+    const roll = document.getElementById("caseRoll");
+
+    opening.style.display="flex";
+    roll.innerHTML="";
+
+    let cards=[];
+
+    for(let i=0;i<40;i++){
+
+        let random=allCards[Math.floor(Math.random()*allCards.length)];
+
+        cards.push(random);
+    }
+
+    cards.push(finalCard);
+
+    for(let i=0;i<8;i++){
+        cards.push(allCards[Math.floor(Math.random()*allCards.length)]);
+    }
+
+    cards.forEach(card=>{
+
+        const div=document.createElement("div");
+        div.className="caseCard";
+
+        div.innerHTML=`
+            <img src="${card.img}">
+            <div>${card.name}</div>
+        `;
+
+        roll.appendChild(div);
+
+    });
+
+    roll.style.transition="none";
+    roll.style.transform="translateX(0px)";
+
+    setTimeout(()=>{
+
+        roll.style.transition="transform 5s cubic-bezier(.08,.8,.18,1)";
+
+        const target=(40*180)-360;
+
+        roll.style.transform=`translateX(-${target}px)`;
+
+    },50);
+
+    setTimeout(()=>{
+
+        opening.style.display="none";
+
+        showReward(finalCard);
+
+    },5200);
+
+}
+
 let battleRunning = false;
 
 function enterBattle() {
